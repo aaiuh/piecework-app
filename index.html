@@ -460,9 +460,27 @@ body {
     <div class="card">
       <div class="card-header">
         <h3>月度统计</h3>
-        <span class="badge" id="histCount">0 月</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="badge" id="histCount">0 月</span>
+          <button onclick="toggleExportBar()" style="background:#1976D2;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer">导出</button>
+        </div>
       </div>
       <div id="histList"><div class="empty-tip">暂无历史记录</div></div>
+    </div>
+    <!-- 导出按钮 -->
+    <div id="exportBar" style="display:none;padding:0 0 12px 0">
+      <div style="background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden">
+        <div style="padding:12px 16px;background:#E3F2FD;font-size:13px;color:#1976D2;font-weight:600">📊 导出月度统计</div>
+        <div style="padding:12px 16px">
+          <div class="form-group" style="margin-bottom:10px">
+            <label>选择月份</label>
+            <div class="select-wrap">
+              <select id="exportMonth" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:15px;background:#fff;appearance:none;-webkit-appearance:none"></select>
+            </div>
+          </div>
+          <button onclick="doExport()" style="width:100%;padding:13px;background:#1976D2;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer">⬇️ 下载 Excel 文件</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1163,6 +1181,111 @@ function toggleHist(id) {
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/piecework-app/sw.js');
+}
+
+// ─── 导出 Excel ──────────────────────────────────────────
+function toggleExportBar() {
+  var bar = document.getElementById('exportBar');
+  var hist = getHist();
+  var dayKeys = Object.keys(hist).sort(function(a,b){return b.localeCompare(a);});
+  if (!dayKeys.length) { showToast('暂无数据可导出'); return; }
+  // 收集所有月份
+  var months = [];
+  dayKeys.forEach(function(k) {
+    var m = k.substring(0,7);
+    if (months.indexOf(m) === -1) months.push(m);
+  });
+  var sel = document.getElementById('exportMonth');
+  sel.innerHTML = months.map(function(m) {
+    var p = m.split('-');
+    return '<option value="'+m+'">'+p[0]+'年'+p[1]+'月</option>';
+  }).join('');
+  bar.style.display = bar.style.display === 'none' ? 'block' : 'none';
+}
+
+function doExport() {
+  var month = document.getElementById('exportMonth').value;
+  if (!month) { showToast('请选择月份'); return; }
+  var hist = getHist();
+  var prods = getProds();
+  var p = month.split('-');
+  var monthLabel = p[0]+'年'+p[1]+'月';
+
+  // 收集该月所有记录
+  var rows = [];
+  Object.keys(hist).filter(function(k){ return k.startsWith(month); })
+    .sort()
+    .forEach(function(dayKey) {
+      var rec = hist[dayKey];
+      if (rec.items && rec.items.length) {
+        rec.items.forEach(function(item) {
+          var pr = prods.find(function(x){ return x.id === item.prodId; });
+          rows.push({
+            日期: fmtDate(dayKey),
+            客户: item.customer || '',
+            地点: item.location || '',
+            类别: pr ? pr.cat : '已删除',
+            系列: pr ? (pr.s || '') : '',
+            型号: pr ? pr.m : '',
+            单价: pr ? pr.price : 0,
+            数量: item.qty,
+            小计: pr ? item.qty * pr.price : 0
+          });
+        });
+      }
+    });
+
+  if (!rows.length) { showToast('该月暂无数据'); return; }
+
+  // 按客户汇总
+  var custMap = {};
+  rows.forEach(function(r) {
+    var name = r.客户 || '（未填）';
+    if (!custMap[name]) custMap[name] = 0;
+    custMap[name] += r.小计;
+  });
+
+  // 生成 CSV（UTF-8 BOM，WPS/Excel 直接识别中文）
+  var BOM = '\uFEFF';
+  var lines = [];
+
+  // 标题
+  lines.push(monthLabel + ' 月度统计报表');
+  lines.push('');
+
+  // 明细表头
+  lines.push(['日期','客户','地点','类别','系列','型号','单价','数量','小计（元）'].join(','));
+  rows.forEach(function(r) {
+    lines.push([
+      r.日期, r.客户, r.地点, r.类别, r.系列, r.型号,
+      r.单价, r.数量, r.小计.toFixed(2)
+    ].map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }).join(','));
+  });
+
+  // 合计行
+  var grandTotal = rows.reduce(function(s,r){ return s+r.小计; }, 0);
+  lines.push('');
+  lines.push('"合计","","","","","","","","'+grandTotal.toFixed(2)+'"');
+
+  // 客户汇总
+  lines.push('');
+  lines.push('客户汇总');
+  lines.push(['客户姓名','提成合计（元）'].join(','));
+  Object.keys(custMap).sort().forEach(function(name) {
+    lines.push('"'+name+'","'+custMap[name].toFixed(2)+'"');
+  });
+
+  var csv = BOM + lines.join('\r\n');
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = monthLabel + '计件统计.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('已导出 ' + monthLabel);
 }
 </script>
 </body>
