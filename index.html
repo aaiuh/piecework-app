@@ -453,10 +453,10 @@ body {
   <div class="page" id="page3">
     <div class="card">
       <div class="card-header">
-        <h3>历史记录</h3>
-        <span class="badge" id="histCount">0</span>
+        <h3>月度统计</h3>
+        <span class="badge" id="histCount">0 月</span>
       </div>
-      <div id="histList"><div class="empty-tip">暂无历史</div></div>
+      <div id="histList"><div class="empty-tip">暂无历史记录</div></div>
     </div>
   </div>
 </div>
@@ -1047,60 +1047,104 @@ function deleteAfter(idx) {
   showToast('已删除');
 }
 
-// ─── 历史 ────────────────────────────────────────────────
+// ─── 月度统计 ─────────────────────────────────────────────
 function renderHistory() {
   var hist = getHist();
-  var keys = Object.keys(hist).sort(function(a, b) { return b.localeCompare(a); });
-  document.getElementById('histCount').textContent = keys.length;
+  var prods = getProds();
+  var dayKeys = Object.keys(hist).sort(function(a, b) { return b.localeCompare(a); });
   var list = document.getElementById('histList');
-  if (!keys.length) {
-    list.innerHTML = '<div class="empty-tip">暂无历史记录</div>';
+
+  if (!dayKeys.length) {
+    document.getElementById('histCount').textContent = '0 月';
+    list.innerHTML = '<div class="empty-tip">暂无历史记录<br>保存每日记录后在此查看</div>';
     return;
   }
-  var prods = getProds();
-  var html = '';
-  keys.forEach(function(k) {
-    var rec = hist[k];
-    var detailId = 'hd_' + k;
-    var itemsHtml = '';
+
+  // 按月份分组：monthMap[YYYY-MM] = { total, days, customerMap }
+  // customerMap[客户名] = { total, items:[] }
+  var monthMap = {};
+  dayKeys.forEach(function(dayKey) {
+    var rec = hist[dayKey];
+    var month = dayKey.substring(0, 7); // YYYY-MM
+    if (!monthMap[month]) monthMap[month] = { total: 0, days: 0, customerMap: {} };
+    var mo = monthMap[month];
+    mo.days++;
     if (rec.items && rec.items.length) {
       rec.items.forEach(function(item) {
         var pr = prods.find(function(p) { return p.id === item.prodId; });
-        var label = pr ? [pr.cat, pr.s, pr.m].filter(Boolean).join(' · ') : '已删除产品';
-        var sub = pr ? fmtMoney(item.qty * pr.price) : '--';
-        itemsHtml += '<div class="hist-detail-item">'
-          + '<span>' + label + ' × ' + item.qty + '</span>'
-          + '<span>' + sub + '</span>'
-          + '</div>';
+        var sub = pr ? item.qty * pr.price : 0;
+        mo.total += sub;
+        var custName = item.customer || '（未填客户）';
+        if (!mo.customerMap[custName]) mo.customerMap[custName] = { total: 0, items: [] };
+        mo.customerMap[custName].total += sub;
+        mo.customerMap[custName].items.push({
+          date: dayKey,
+          label: pr ? [pr.cat, pr.s, pr.m].filter(Boolean).join(' · ') : '已删除产品',
+          qty: item.qty,
+          sub: sub
+        });
       });
     }
-    html += '<div class="hist-item">'
-      + '<div class="hist-header" onclick="toggleHist(\'' + detailId + '\')">'
-      + '<div><div class="hist-date">' + fmtDate(k) + '</div>'
-      + '<div class="hist-sub">共 ' + (rec.pieces || 0) + ' 条记录</div></div>'
-      + '<div class="hist-total">' + fmtMoney(rec.total || 0) + '</div>'
+  });
+
+  var months = Object.keys(monthMap).sort(function(a, b) { return b.localeCompare(a); });
+  document.getElementById('histCount').textContent = months.length + ' 月';
+
+  var html = '';
+  months.forEach(function(month) {
+    var mo = monthMap[month];
+    var p = month.split('-');
+    var monthLabel = p[0] + '年' + p[1] + '月';
+    var monthId = 'mo_' + month;
+    var custNames = Object.keys(mo.customerMap).sort();
+
+    // 客户列表
+    var custHtml = '';
+    custNames.forEach(function(name) {
+      var cust = mo.customerMap[name];
+      var custId = 'cu_' + month + '_' + encodeURIComponent(name);
+      var rowsHtml = cust.items.map(function(it) {
+        return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f0f0;font-size:12px">'
+          + '<span style="color:#555">' + fmtDate(it.date).replace(/\d{4}年/, '') + '&nbsp;' + it.label + ' ×' + it.qty + '</span>'
+          + '<span style="color:#FF6F00">' + fmtMoney(it.sub) + '</span>'
+          + '</div>';
+      }).join('');
+
+      custHtml += '<div style="border-bottom:1px solid #eee">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px 10px 24px;cursor:pointer;background:#fafafa" onclick="toggleHist(\'' + custId + '\')">'
+        + '<div style="display:flex;align-items:center;gap:8px">'
+        + '<span style="font-size:18px">👤</span>'
+        + '<span style="font-weight:600;font-size:14px">' + name + '</span>'
+        + '<span style="font-size:12px;color:#999">' + cust.items.length + '条</span>'
+        + '</div>'
+        + '<span style="color:#FF6F00;font-weight:700">' + fmtMoney(cust.total) + '</span>'
+        + '</div>'
+        + '<div id="' + custId + '" style="display:none;padding:8px 16px 8px 48px;background:#fff">'
+        + rowsHtml
+        + '</div>'
+        + '</div>';
+    });
+
+    html += '<div style="border-bottom:2px solid #E3F2FD;margin-bottom:4px">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#E3F2FD;cursor:pointer" onclick="toggleHist(\'' + monthId + '\')">'
+      + '<div>'
+      + '<div style="font-weight:700;color:#1976D2;font-size:16px">' + monthLabel + '</div>'
+      + '<div style="font-size:12px;color:#757575">共 ' + mo.days + ' 天 · ' + custNames.length + ' 位客户</div>'
       + '</div>'
-      + '<div class="hist-detail" id="' + detailId + '">'
-      + itemsHtml
-      + '<button class="hist-del-btn" onclick="deleteHistory(\'' + k + '\')">删除此记录</button>'
+      + '<div style="font-size:20px;font-weight:700;color:#FF6F00">' + fmtMoney(mo.total) + '</div>'
+      + '</div>'
+      + '<div id="' + monthId + '" style="display:none">'
+      + custHtml
       + '</div>'
       + '</div>';
   });
+
   list.innerHTML = html;
 }
 
 function toggleHist(id) {
   var el = document.getElementById(id);
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
-}
-
-function deleteHistory(k) {
-  if (!confirm('确认删除 ' + fmtDate(k) + ' 的记录？')) return;
-  var hist = getHist();
-  delete hist[k];
-  setHist(hist);
-  renderHistory();
-  showToast('已删除');
 }
 
 // ─── 初始化 ──────────────────────────────────────────────
