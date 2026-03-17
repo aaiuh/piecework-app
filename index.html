@@ -33,6 +33,14 @@
       overflow: hidden;
     }
 
+    /* ── Bottom Tab Bar layout ── */
+    .main-content {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
     /* ── Header ── */
     .header {
       height: var(--header-h);
@@ -48,13 +56,14 @@
     .header h1 { font-size: 18px; font-weight: 600; }
     .header-date { font-size: 13px; opacity: .85; }
 
-    /* ── Tab Bar ── */
+    /* ── Tab Bar (bottom) ── */
     .tab-bar {
       height: var(--tab-h);
       background: #fff;
       display: flex;
-      border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border);
       flex-shrink: 0;
+      box-shadow: 0 -2px 8px rgba(0,0,0,.07);
     }
     .tab-btn {
       flex: 1;
@@ -76,10 +85,10 @@
     .tab-btn.active::after {
       content: '';
       position: absolute;
-      bottom: 0; left: 10%; right: 10%;
+      top: 0; left: 10%; right: 10%;
       height: 3px;
       background: var(--primary);
-      border-radius: 3px 3px 0 0;
+      border-radius: 0 0 3px 3px;
     }
 
     /* ── Pages ── */
@@ -308,18 +317,8 @@
   <div id="headerTotal" style="font-size:20px;font-weight:700;color:#FFD54F;"></div>
 </div>
 
-<!-- Tab Bar -->
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab(0)" id="tab0">
-    <span class="tab-icon">📋</span>今日记录
-  </button>
-  <button class="tab-btn" onclick="switchTab(1)" id="tab1">
-    <span class="tab-icon">📦</span>品类管理
-  </button>
-  <button class="tab-btn" onclick="switchTab(2)" id="tab2">
-    <span class="tab-icon">📅</span>历史汇总
-  </button>
-</div>
+<!-- Main Content -->
+<div class="main-content">
 
 <!-- Page 0: 今日记录 -->
 <div class="page active" id="page0">
@@ -374,6 +373,21 @@
 
 <!-- FAB -->
 <button class="fab" id="fab" onclick="openAddModal()" style="display:none;">＋</button>
+
+</div><!-- end main-content -->
+
+<!-- Tab Bar (bottom) -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)" id="tab0">
+    <span class="tab-icon">📋</span>今日记录
+  </button>
+  <button class="tab-btn" onclick="switchTab(1)" id="tab1">
+    <span class="tab-icon">📦</span>品类管理
+  </button>
+  <button class="tab-btn" onclick="switchTab(2)" id="tab2">
+    <span class="tab-icon">📅</span>历史汇总
+  </button>
+</div>
 
 <!-- Modal: 添加/编辑品类 -->
 <div class="modal-overlay" id="catModal">
