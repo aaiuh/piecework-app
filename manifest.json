@@ -1,0 +1,26 @@
+{
+  "name": "计件工作记录",
+  "short_name": "计件记录",
+  "description": "安装工计件、售后、月度统计",
+  "start_url": "/piecework-app/",
+  "scope": "/piecework-app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F7FA",
+  "theme_color": "#1976D2",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
