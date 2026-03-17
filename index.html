@@ -1,113 +1,103 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>计件工作记录</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>计件记录</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,"PingFang SC",sans-serif;background:#F5F7FA;color:#212121;height:100vh;display:flex;flex-direction:column}
-.header{height:56px;background:#1976D2;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
-.header-title{font-size:18px;font-weight:600}
-.header-date{font-size:13px;opacity:0.85}
-.header-total{font-size:20px;font-weight:700;color:#FFD54F}
-.tab-bar{height:56px;background:#fff;display:flex;border-top:1px solid #E0E0E0}
-.tab-btn{flex:1;border:none;background:none;font-size:11px;color:#757575;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative}
-.tab-btn.active{color:#1976D2}
-.tab-btn.active::after{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:#1976D2;border-radius:0 0 3px 3px}
-.page{display:none;flex:1;overflow-y:auto;padding:12px}
-.page.active{display:block}
-.card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:12px}
-.card-header{padding:12px 16px;background:#E3F2FD;display:flex;align-items:center;justify-content:space-between}
-.card-header h3{font-size:15px;color:#1976D2;font-weight:600}
-.summary-bar{background:#1976D2;color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.summary-bar .label{font-size:13px;opacity:0.85}
-.summary-bar .value{font-size:26px;font-weight:700}
-.record-item{display:flex;align-items:flex-start;padding:12px 16px;border-bottom:1px solid #E0E0E0;gap:8px}
-.record-item:last-child{border-bottom:none}
-.record-info{flex:1}
-.record-title{font-size:15px;font-weight:600}
-.record-meta{font-size:12px;color:#757575;margin-top:3px}
-.record-amount{font-size:15px;color:#FF6F00;font-weight:700}
-.delete-btn{background:none;border:none;font-size:20px;color:#ccc;cursor:pointer}
-.add-btn{width:100%;padding:12px;border:2px dashed #1976D2;background:#E3F2FD;color:#1976D2;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
-.save-row{padding:12px 16px}
-.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;cursor:pointer;font-weight:500}
-.btn-primary{background:#1976D2;color:#fff}
-.empty-tip{text-align:center;color:#757575;padding:32px 16px}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px;max-height:90vh;overflow-y:auto}
-.modal h3{font-size:17px;font-weight:700;margin-bottom:16px;text-align:center}
-.form-group{margin-bottom:14px}
-.form-group label{font-size:13px;color:#757575;margin-bottom:5px;display:block}
-.form-group input,.form-group textarea,.form-group select{width:100%;border:1px solid #E0E0E0;border-radius:10px;padding:11px 14px;font-size:15px;background:#fff}
-.form-group textarea{height:80px;resize:none}
-.modal-btns{display:flex;gap:10px;margin-top:18px}
-.modal-btns button{flex:1;padding:13px;border-radius:8px;font-size:15px;cursor:pointer}
-.btn-ghost{background:transparent;color:#1976D2;border:1px solid #1976D2}
-.btn-solid{background:#1976D2;color:#fff;border:none}
-.fab{display:none;position:fixed;bottom:72px;right:16px;width:52px;height:52px;border-radius:50%;background:#FF6F00;color:#fff;font-size:28px;border:none;box-shadow:0 4px 12px rgba(0,0,0,.25);cursor:pointer;z-index:50}
-.toast{position:fixed;bottom:140px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;padding:9px 20px;border-radius:20px;font-size:14px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
-.toast.show{opacity:1}
-.badge{display:inline-block;background:#E3F2FD;color:#1976D2;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600}
-.select-wrap{position:relative}
-.select-wrap::after{content:'▼';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#757575;pointer-events:none}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:sans-serif;background:#f5f7fa;color:#212121;height:100vh;display:flex;flex-direction:column}
+.h{height:50px;background:#1976d2;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.tb{height:50px;background:#fff;display:flex;border-top:1px solid #ddd}
+.bt{flex:1;border:none;background:none;font-size:12px;color:#757575;cursor:pointer}
+.bt.active{color:#1976d2;font-weight:bold}
+.pg{display:none;flex:1;overflow-y:auto;padding:10px}
+.pg.active{display:block}
+.cd{background:#fff;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.ch{padding:10px 14px;background:#e3f2fd;display:flex;justify-content:space-between;font-weight:bold;color:#1976d2}
+.sb{background:#1976d2;color:#fff;padding:12px 16px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between}
+.it{display:flex;padding:10px 14px;border-bottom:1px solid #eee;gap:8px}
+.it:last-child{border:none}
+.it .l{flex:1}
+.it .t{font-weight:bold}
+.it .m{font-size:12px;color:#666}
+.it .a{color:#ff6f00;font-weight:bold}
+.it .d{background:none;border:none;font-size:18px;color:#ccc;padding:0 4px}
+.ab{width:100%;padding:10px;border:2px dashed #1976d2;background:#e3f2fd;color:#1976d2;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer}
+.sv{display:none;padding:10px}
+.sv button{width:100%;padding:12px;background:#1976d2;color:#fff;border:none;border-radius:8px;font-size:14px}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+.md{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:450px;padding:20px;max-height:85vh;overflow-y:auto}
+.md h3{text-align:center;margin-bottom:14px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:12px;color:#666;margin-bottom:4px}
+.fg input,.fg textarea,.fg select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px}
+.fg textarea{height:60px;resize:none}
+.mb{display:flex;gap:8px;margin-top:14px}
+.mb button{flex:1;padding:12px;border-radius:8px;font-size:14px;cursor:pointer}
+.mb .g{background:none;border:1px solid #1976d2;color:#1976d2}
+.mb .p{background:#1976d2;border:none;color:#fff}
+.fab{display:none;position:fixed;bottom:66px;right:16px;width:50px;height:50px;border-radius:50%;background:#ff6f00;color:#fff;font-size:24px;border:none;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:50}
+.ts{position:fixed;bottom:130px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:8px 16px;border-radius:20px;font-size:14px;z-index:200;opacity:0;transition:opacity 0.3s}
+.ts.show{opacity:1}
+.bg{background:#e3f2fd;color:#1976d2;padding:2px 8px;border-radius:6px;font-size:12px}
+.em{text-align:center;color:#999;padding:30px 10px}
 </style>
 </head>
 <body>
-<div class="header">
-<div><div class="header-title">计件记录</div><div class="header-date" id="headerDate"></div></div>
-<div class="header-total" id="headerTotal"></div>
+<div class="h">
+<div><span style="font-weight:bold;font-size:16px">计件记录</span><span id="hd"></span></div>
+<div id="hr" style="font-weight:bold;color:#ffd54f"></div>
 </div>
-<div class="page active" id="page0">
-<div class="summary-bar"><div><div class="label">今日提成</div><div class="value" id="today0">¥0.00</div></div><div style="font-size:36px">$</div></div>
-<div class="card"><div class="card-header"><h3>每日记录</h3><span class="badge" id="badge0"></span></div><div id="list0"><div class="empty-tip">点击下方添加</div></div><div style="padding:12px;border-top:1px solid #E0E0E0"><button class="add-btn" onclick="openModal(0)">+ 添加记录</button></div><div class="save-row" id="save0" style="display:none"><button class="btn btn-primary" onclick="saveDay(0)">保存</button></div></div>
+<div class="pg active" id="pg0">
+<div class="sb"><div><span style="font-size:12px;opacity:0.8">今日提成</span><div id="t0" style="font-size:24px;font-weight:bold">0.00</div></div><div style="font-size:30px">$</div></div>
+<div class="cd"><div class="ch"><span>每日记录</span><span class="bg" id="b0"></span></div><div id="l0"><div class="em">点击下方添加</div></div><div style="padding:10px;border-top:1px solid #eee"><button class="ab" onclick="openM(0)">+ 添加记录</button></div><div class="sv" id="s0"><button onclick="saveD(0)">保存</button></div></div>
 </div>
-<div class="page" id="page1">
-<div class="summary-bar"><div><div class="label">售后次数</div><div class="value" id="today1">0</div></div><div style="font-size:36px">S</div></div>
-<div class="card"><div class="card-header"><h3>售后记录</h3><span class="badge" id="badge1"></span></div><div id="list1"><div class="empty-tip">点击下方添加</div></div><div style="padding:12px;border-top:1px solid #E0E0E0"><button class="add-btn" onclick="openModal(1)">+ 添加售后</button></div><div class="save-row" id="save1" style="display:none"><button class="btn btn-primary" onclick="saveDay(1)">保存</button></div></div>
+<div class="pg" id="pg1">
+<div class="sb"><div><span style="font-size:12px;opacity:0.8">售后次数</span><div id="t1" style="font-size:24px;font-weight:bold">0</div></div><div style="font-size:30px">S</div></div>
+<div class="cd"><div class="ch"><span>售后记录</span><span class="bg" id="b1"></span></div><div id="l1"><div class="em">点击下方添加</div></div><div style="padding:10px;border-top:1px solid #eee"><button class="ab" onclick="openM(1)">+ 添加售后</button></div><div class="sv" id="s1"><button onclick="saveD(1)">保存</button></div></div>
 </div>
-<div class="page" id="page2">
-<div class="summary-bar"><div><div class="label">报销总额</div><div class="value" id="today2">¥0.00</div></div><div style="font-size:36px">M</div></div>
-<div class="card"><div class="card-header"><h3>报销记录</h3><span class="badge" id="badge2"></span></div><div id="list2"><div class="empty-tip">点击下方添加</div></div><div style="padding:12px;border-top:1px solid #E0E0E0"><button class="add-btn" onclick="openModal(2)">+ 添加报销</button></div><div class="save-row" id="save2" style="display:none"><button class="btn btn-primary" onclick="saveDay(2)">保存</button></div></div>
+<div class="pg" id="pg2">
+<div class="sb"><div><span style="font-size:12px;opacity:0.8">报销总额</span><div id="t2" style="font-size:24px;font-weight:bold">0.00</div></div><div style="font-size:30px">M</div></div>
+<div class="cd"><div class="ch"><span>报销记录</span><span class="bg" id="b2"></span></div><div id="l2"><div class="em">点击下方添加</div></div><div style="padding:10px;border-top:1px solid #eee"><button class="ab" onclick="openM(2)">+ 添加报销</button></div><div class="sv" id="s2"><button onclick="saveD(2)">保存</button></div></div>
 </div>
-<div class="page" id="page3"><div class="card"><div class="card-header"><h3>产品库</h3><span class="badge" id="prodCount">0</span></div><div id="prodList"><div class="empty-tip">暂无，点右下角+</div></div></div></div>
-<div class="page" id="page4"><div class="card"><div class="card-header"><h3>历史</h3><span class="badge" id="histCount">0</span></div><div id="histList"><div class="empty-tip">暂无</div></div></div></div>
-<button class="fab" onclick="openProdModal()">+</button>
-<div class="tab-bar">
-<button class="tab-btn active" onclick="switchTab(0)">每日</button>
-<button class="tab-btn" onclick="switchTab(1)">售后</button>
-<button class="tab-btn" onclick="switchTab(2)">报销</button>
-<button class="tab-btn" onclick="switchTab(3)">产品</button>
-<button class="tab-btn" onclick="switchTab(4)">历史</button>
+<div class="pg" id="pg3"><div class="cd"><div class="ch"><span>产品库</span><span class="bg" id="pc">0</span></div><div id="pl"><div class="em">暂无，点右下角+</div></div></div></div>
+<div class="pg" id="pg4"><div class="cd"><div class="ch"><span>历史</span><span class="bg" id="hc">0</span></div><div id="hl"><div class="em">暂无</div></div></div></div>
+<button class="fab" onclick="openPM()">+</button>
+<div class="tb">
+<button class="bt active" onclick="st(0)">每日</button>
+<button class="bt" onclick="st(1)">售后</button>
+<button class="bt" onclick="st(2)">报销</button>
+<button class="bt" onclick="st(3)">产品</button>
+<button class="bt" onclick="st(4)">历史</button>
 </div>
-<div class="modal-overlay" id="modal0"><div class="modal"><h3>添加记录</h3>
-<div class="form-group"><label>类别*</label><div class="select-wrap"><select id="sel0Cat" onchange="onCatChange()"><option value="">--请选--</option></select></div></div>
-<div class="form-group" id="grpSeries" style="display:none"><label>系列*</label><div class="select-wrap"><select id="sel0Series"><option value="">--请选--</option></select></div></div>
-<div class="form-group" id="grpModel" style="display:none"><label>型号*</label><div class="select-wrap"><select id="sel0Model"><option value="">--请选--</option></select></div></div>
-<div class="form-group" id="grpPrice" style="display:none"><label>提成</label><div id="priceDisplay" style="padding:11px;background:#f5f7fa;border-radius:10px;font-size:16px;color:#FF6F00;font-weight:700"></div></div>
-<div class="form-group"><label>客户</label><input type="text" id="inp0Cust" placeholder="选填"></div>
-<div class="form-group"><label>地点</label><input type="text" id="inp0Loc" placeholder="选填"></div>
-<div class="form-group"><label>数量*</label><input type="number" id="inp0Qty" min="1"></div>
-<div class="modal-btns"><button class="btn-ghost" onclick="closeModal(0)">取消</button><button class="btn-solid" onclick="addRecord(0)">添加</button></div></div></div>
-<div class="modal-overlay" id="modal1"><div class="modal"><h3>添加售后</h3>
-<div class="form-group"><label>客户*</label><input type="text" id="inp1Cust"></div>
-<div class="form-group"><label>地址*</label><input type="text" id="inp1Addr"></div>
-<div class="form-group"><label>问题*</label><textarea id="inp1Prob"></textarea></div>
-<div class="form-group"><label>结果*</label><textarea id="inp1Res"></textarea></div>
-<div class="modal-btns"><button class="btn-ghost" onclick="closeModal(1)">取消</button><button class="btn-solid" onclick="addRecord(1)">添加</button></div></div></div>
-<div class="modal-overlay" id="modal2"><div class="modal"><h3>添加报销</h3>
-<div class="form-group"><label>类别*</label><input type="text" id="inp2Cat"></div>
-<div class="form-group"><label>摘要*</label><textarea id="inp2Desc"></textarea></div>
-<div class="form-group"><label>金额*</label><input type="number" id="inp2Amt" step="0.01"></div>
-<div class="modal-btns"><button class="btn-ghost" onclick="closeModal(2)">取消</button><button class="btn-solid" onclick="addRecord(2)">添加</button></div></div></div>
-<div class="modal-overlay" id="prodModal"><div class="modal"><h3>添加产品</h3>
-<div class="form-group"><label>类别*</label><input type="text" id="prodCat"></div>
-<div id="seriesList"></div>
-<button class="add-btn" onclick="addSeriesBlock()" style="margin-bottom:12px">+系列</button>
-<div class="modal-btns"><button class="btn-ghost" onclick="closeProdModal()">取消</button><button class="btn-solid" onclick="saveProducts()">保存</button></div></div></div>
-<div class="toast" id="toast"></div>
+<div class="mo" id="m0"><div class="md"><h3>添加记录</h3>
+<div class="fg"><label>类别*</label><select id="sc"><option value="">--请选--</option></select></div>
+<div class="fg" id="gs" style="display:none"><label>系列*</label><select id="ss"><option value="">--请选--</option></select></div>
+<div class="fg" id="gm" style="display:none"><label>型号*</label><select id="sm"><option value="">--请选--</option></select></div>
+<div class="fg" id="gp" style="display:none"><label>提成</label><div id="pd" style="padding:10px;background:#f5f7fa;border-radius:8px;font-weight:bold;color:#ff6f00"></div></div>
+<div class="fg"><label>客户</label><input type="text" id="ic" placeholder="选填"></div>
+<div class="fg"><label>地点</label><input type="text" id="il" placeholder="选填"></div>
+<div class="fg"><label>数量*</label><input type="number" id="iq" min="1"></div>
+<div class="mb"><button class="g" onclick="closeM(0)">取消</button><button class="p" onclick="addR(0)">添加</button></div></div></div>
+<div class="mo" id="m1"><div class="md"><h3>添加售后</h3>
+<div class="fg"><label>客户*</label><input type="text" id="i1c"></div>
+<div class="fg"><label>地址*</label><input type="text" id="i1a"></div>
+<div class="fg"><label>问题*</label><textarea id="i1p"></textarea></div>
+<div class="fg"><label>结果*</label><textarea id="i1r"></textarea></div>
+<div class="mb"><button class="g" onclick="closeM(1)">取消</button><button class="p" onclick="addR(1)">添加</button></div></div></div>
+<div class="mo" id="m2"><div class="md"><h3>添加报销</h3>
+<div class="fg"><label>类别*</label><input type="text" id="i2t"></div>
+<div class="fg"><label>摘要*</label><textarea id="i2d"></textarea></div>
+<div class="fg"><label>金额*</label><input type="number" id="i2a" step="0.01"></div>
+<div class="mb"><button class="g" onclick="closeM(2)">取消</button><button class="p" onclick="addR(2)">添加</button></div></div></div>
+<div class="mo" id="pm"><div class="md"><h3>添加产品</h3>
+<div class="fg"><label>类别*</label><input type="text" id="pca"></div>
+<div id="sl"></div>
+<button class="ab" onclick="addSB()" style="margin:10px 0">+系列</button>
+<div class="mb"><button class="g" onclick="closePM()">取消</button><button class="p" onclick="saveBP()">保存</button></div></div></div>
+<div class="ts" id="ts"></div>
 <script>
 var SP="pw_prods",SD="pw_drafts",SH="pw_hist";
 function GP(){return JSON.parse(localStorage.getItem(SP)||"[]")}
@@ -116,47 +106,50 @@ function GD(){return JSON.parse(localStorage.getItem(SD)||"{}")}
 function SD(v){localStorage.setItem(SD,JSON.stringify(v))}
 function GH(){return JSON.parse(localStorage.getItem(SH)||"{}")}
 function SH(v){localStorage.setItem(SH,JSON.stringify(v))}
-function todayKey(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function fmtDate(k){var p=k.split("-");return p[0]+"年"+p[1]+"月"+p[2]+"日"}
-function fmtMoney(n){return "¥"+Number(n).toFixed(2)}
-function switchTab(i){
-document.querySelectorAll(".tab-btn").forEach(function(b,j){b.classList.toggle("active",i===j)});
-document.querySelectorAll(".page").forEach(function(p,j){p.classList.toggle("active",i===j)});
+function tk(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function fd(k){return k.replace(/(\d+)-(\d+)-(\d+)/,"")}
+function fm(n){return "¥"+Number(n).toFixed(2)}
+function st(i){
+document.querySelectorAll(".bt").forEach(function(b,j){b.classList.toggle("active",i===j)});
+document.querySelectorAll(".pg").forEach(function(p,j){p.classList.toggle("active",i===j)});
 document.getElementById("fab").style.display=i===3?"":"none";
-[0,1,2].forEach(function(j){if(i===j)renderList(j);else document.getElementById("headerTotal").innerHTML=""});
-if(i===3)renderProducts();if(i===4)renderHistory()}
-function getDraft(t){var d=GD();if(!d[todayKey()])d[todayKey()]={0:[],1:[],2:[]};return d[todayKey()][t]}
-function setDraft(t,v){var d=GD();if(!d[todayKey()])d[todayKey()]={0:[],1:[],2:[]};d[todayKey()][t]=v;SD(d)}
-function renderList(t){
-var draft=getDraft(t),list=document.getElementById("list"+t),saveBtn=document.getElementById("save"+t),badge=document.getElementById("badge"+t);
-if(badge)badge.innerHTML=fmtDate(todayKey()).replace(/\d{4}年/,"");
-if(!draft||draft.length===0){list.innerHTML='<div class="empty-tip">点击下方添加</div>';saveBtn.style.display="none";updateSummary(t,0);return}
-var html="",total=0;
-draft.forEach(function(item,idx){if(t===0){var pr=GP().find(function(x){return x.id===item.pid});if(!pr)return;var sub=item.q*pr.price;total+=sub;var sm=[pr.s,pr.m].filter(Boolean).join("·");html+='<div class="record-item"><div class="record-info"><div class="record-title">'+pr.cat+'</div><div class="record-meta">'+sm+"·¥"+pr.price+"/件<br"+(item.c?"客户:"+item.c:"")+" "+(item.l?"地点:"+item.l:"")+'</div></div><div class="record-amount">'+fmtMoney(sub)+'<div style="font-size:12px;color:#757575">x'+item.q+'</div></div><button class="delete-btn" onclick="deleteRecord('+t+","+idx+')">x</button></div>'}else if(t===1){total+=1;html+='<div class="record-item"><div class="record-info"><div class="record-title">'+item.c+'</div><div class="record-meta">地址:'+item.a+"<br>问题:"+(item.p||"").substring(0,20)+"<br>结果:"+(item.r||"").substring(0,20)+'</div></div><button class="delete-btn" onclick="deleteRecord('+t+","+idx+')">x</button></div>'}else if(t===2){total+=item.am;html+='<div class="record-item"><div class="record-info"><div class="record-title">'+item.t+'</div><div class="record-meta">'+item.d+'</div></div><div class="record-amount">'+fmtMoney(item.am)+'</div><button class="delete-btn" onclick="deleteRecord('+t+","+idx+')">x</button></div>'}});
-list.innerHTML=html;saveBtn.style.display="block";updateSummary(t,total)}
-function updateSummary(t,total){if(t===0){document.getElementById("today0").innerHTML=fmtMoney(total);document.getElementById("headerTotal").innerHTML=total>0?fmtMoney(total):""}else if(t===1){document.getElementById("today1").innerHTML=total;document.getElementById("headerTotal").innerHTML=total>0?total+"次售后":""}else if(t===2){document.getElementById("today2").innerHTML=fmtMoney(total);document.getElementById("headerTotal").innerHTML=total>0?fmtMoney(total):""}}
-function deleteRecord(t,idx){var d=getDraft(t);d.splice(idx,1);setDraft(t,d);renderList(t)}
-function saveDay(t){var draft=getDraft(t);if(!draft||draft.length===0){showToast("请先添加记录");return}var key=todayKey(),hist=GH();if(!hist[key])hist[key]={0:{i:[],t:0},1:{i:[],t:0},2:{i:[],t:0}};var total=draft.reduce(function(s,x){if(t===0){var pr=GP().find(function(p){return p.id===x.pid});return s+(pr?x.q*pr.price:0)}else if(t===1){return s+1}else if(t===2){return s+x.am}return s},0);hist[key][t]={i:draft,t:total};SH(hist);setDraft(t,[]);renderList(t);showToast("已保存")}
-function openModal(t){if(t===0){var ps=GP();if(!ps.length){showToast("请先添加产品");return}var cats=[...new Set(ps.map(function(p){return p.cat}))];document.getElementById("sel0Cat").innerHTML='<option value="">--请选--</option>'+cats.map(function(c){return'<option value="'+c+'">'+c+'</option>'}).join("");["grpSeries","grpModel","grpPrice"].forEach(function(id){document.getElementById(id).style.display="none"});document.getElementById("inp0Qty").value="";document.getElementById("inp0Cust").value="";document.getElementById("inp0Loc").value=""}else if(t===1){document.getElementById("inp1Cust").value="";document.getElementById("inp1Addr").value="";document.getElementById("inp1Prob").value="";document.getElementById("inp1Res").value=""}else if(t===2){document.getElementById("inp2Cat").value="";document.getElementById("inp2Desc").value="";document.getElementById("inp2Amt").value=""}document.getElementById("modal"+t).classList.add("open")}
-function closeModal(t){document.getElementById("modal"+t).classList.remove("open")}
-function addRecord(t){var draft=getDraft(t);if(t===0){var cat=document.getElementById("sel0Cat").value,series=document.getElementById("sel0Series").value,model=document.getElementById("sel0Model").value,qty=parseInt(document.getElementById("inp0Qty").value),cust=document.getElementById("inp0Cust").value.trim(),loc=document.getElementById("inp0Loc").value.trim();if(!cat||!qty||qty<=0){showToast("请填写完整");return}var pr=GP().find(function(p){return p.cat===cat&&(!series||p.s===series)&&(!model||p.m===model)});if(!pr){showToast("请完整选择");return}draft.push({pid:pr.id,q:qty,c:cust,l:loc})}else if(t===1){var c=document.getElementById("inp1Cust").value.trim(),a=document.getElementById("inp1Addr").value.trim(),p=document.getElementById("inp1Prob").value.trim(),r=document.getElementById("inp1Res").value.trim();if(!c||!a||!p||!r){showToast("请填写完整");return}draft.push({c:c,a:a,p:p,r:r})}else if(t===2){var tt=document.getElementById("inp2Cat").value.trim(),dd=document.getElementById("inp2Desc").value.trim(),am=parseFloat(document.getElementById("inp2Amt").value);if(!tt||!dd||!am||am<=0){showToast("请填写完整");return}draft.push({t:tt,d:dd,am:am})}setDraft(t,draft);closeModal(t);renderList(t);showToast("已添加")}
-function onCatChange(){var cat=document.getElementById("sel0Cat").value,ps=GP();["grpSeries","grpModel","grpPrice"].forEach(function(id){document.getElementById(id).style.display="none"});if(!cat)return;var ss=[...new Set(ps.filter(function(p){return p.cat===cat}).map(function(p){return p.s}).filter(Boolean))];if(ss.length){document.getElementById("sel0Series").innerHTML='<option value="">--请选--</option>'+ss.map(function(s){return'<option value="'+s+'">'+s+'</option>'}).join("");document.getElementById("grpSeries").style.display="block"}else{fillModels(cat,"")}}
-document.getElementById("sel0Series").onchange=function(){var cat=document.getElementById("sel0Cat").value,series=document.getElementById("sel0Series").value;if(!series)return;fillModels(cat,series)}
-function fillModels(cat,series){var ps=GP();var ms=[...new Set(ps.filter(function(p){return p.cat===cat&&(series===""||p.s===series)}).map(function(p){return p.m}).filter(Boolean))];if(ms.length){document.getElementById("sel0Model").innerHTML='<option value="">--请选--</option>'+ms.map(function(m){return'<option value="'+m+'">'+m+'</option>'}).join("");document.getElementById("grpModel").style.display="block"}else{showPrice(cat,series,"")}}
-document.getElementById("sel0Model").onchange=function(){var cat=document.getElementById("sel0Cat").value,series=document.getElementById("sel0Series").value,model=document.getElementById("sel0Model").value;if(!model){document.getElementById("grpPrice").style.display="none";return}showPrice(cat,series,model)}
-function showPrice(cat,series,model){var pr=GP().find(function(p){return p.cat===cat&&(!series||p.s===series)&&(!model||p.m===model)});if(pr){document.getElementById("priceDisplay").innerHTML="¥"+pr.price+"/件";document.getElementById("grpPrice").style.display="block"}}
-var seriesCount=0;
-function openProdModal(){document.getElementById("prodCat").value="";document.getElementById("seriesList").innerHTML="";seriesCount=0;addSeriesBlock();document.getElementById("prodModal").classList.add("open")}
-function closeProdModal(){document.getElementById("prodModal").classList.remove("open")}
-function addSeriesBlock(){seriesCount++;var id="series_"+seriesCount;var html='<div style="background:#f5f7fa;border-radius:10px;padding:12px;margin-bottom:10px" id="'+id+'"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><label style="font-size:14px;font-weight:600;color:#1976D2">系列'+seriesCount+'</label><button onclick="document.getElementById(\''+id+'\').remove()" style="background:none;border:none;color:#E53935;font-size:18px;cursor:pointer">x</button></div><input type="text" class="seriesName" placeholder="系列名" style="width:100%;padding:8px;font-size:14px;border:1px solid #E0E0E0;border-radius:8px;margin-bottom:8px"><div class="modelList"><div style="display:flex;gap:8px;margin-bottom:6px"><input type="text" placeholder="型号" class="modelName" style="flex:1;padding:8px;font-size:14px;border:1px solid #E0E0E0;border-radius:8px"><input type="number" placeholder="提成" class="modelPrice" style="width:70px;padding:8px;font-size:14px;border:1px solid #E0E0E0;border-radius:8px" step="0.01"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#ccc;font-size:18px;cursor:pointer">x</button></div></div><button onclick="addModelInput(\''+id+'\')" style="background:none;border:1px dashed #1976D2;color:#1976D2;border-radius:6px;padding:6px;font-size:12px;width:100%;margin-top:6px">+型号</button></div>';document.getElementById("seriesList").insertAdjacentHTML("beforeend",html)}
-function addModelInput(seriesId){var el=document.getElementById(seriesId);var list=el.querySelector(".modelList");list.insertAdjacentHTML("beforeend",'<div style="display:flex;gap:8px;margin-bottom:6px"><input type="text" placeholder="型号" class="modelName" style="flex:1;padding:8px;font-size:14px;border:1px solid #E0E0E0;border-radius:8px"><input type="number" placeholder="提成" class="modelPrice" style="width:70px;padding:8px;font-size:14px;border:1px solid #E0E0E0;border-radius:8px" step="0.01"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#ccc;font-size:18px;cursor:pointer">x</button></div>')}
-function saveProducts(){var cat=document.getElementById("prodCat").value.trim();if(!cat){showToast("请填类别");return}var blocks=document.querySelectorAll("#seriesList>div");if(blocks.length===0){showToast("请加系列");return}var newProds=[],hasValid=false;blocks.forEach(function(b){var sn=b.querySelector(".seriesName").value.trim();var ms=b.querySelectorAll(".modelList>div");ms.forEach(function(m){var mn=m.querySelector(".modelName").value.trim(),pv=parseFloat(m.querySelector(".modelPrice").value);if(mn&&!isNaN(pv)&&pv>0){hasValid=true;newProds.push({id:Date.now()+Math.random(),cat:cat,s:sn,m:mn,price:pv})}})});if(!hasValid){showToast("请填型号和提成");return}var ps=GP();ps.push.apply(ps,newProds);SP(ps);closeProdModal();renderProducts();showToast("已添加"+newProds.length+"个")}
-function renderProducts(){var ps=GP();document.getElementById("prodCount").innerHTML=ps.length;var list=document.getElementById("prodList");if(!ps.length){list.innerHTML='<div class="empty-tip">暂无，点右下角+</div>';return}var cm={};ps.forEach(function(p,i){if(!cm[p.cat])cm[p.cat]={};var s=p.s||"__";if(!cm[p.cat][s])cm[p.cat][s]=[];cm[p.cat][s].push({...p,_idx:i})});var html="";Object.keys(cm).forEach(function(cat){var sm=cm[cat];var ttl=Object.values(sm).reduce(function(s,a){return s+a.length},0);var cid="c"+encodeURIComponent(cat);html+='<div style="border-bottom:2px solid #E3F2FD"><div style="padding:12px 16px;background:#E3F2FD;cursor:pointer" onclick="document.getElementById(\''+cid+'\').style.display=document.getElementById(\''+cid+'\').style.display==\'none\'?\'block\':\'none\'"><span style="font-weight:700;color:#1976D2">'+cat+'</span><span style="font-size:12px;color:#757575;margin-left:8px">'+ttl+'型</span></div><div id="'+cid+'" style="display:none">';Object.keys(sm).forEach(function(s){var its=sm[s];var sl=s==="__"?"无系列":s;its.forEach(function(p){html+='<div style="display:flex;align-items:center;padding:10px 16px 10px 32px;border-top:1px solid #E0E0E0;gap:8px"><div style="flex:1;font-size:14px">'+p.m+'</div><div style="color:#FF6F00;font-weight:700;font-size:14px">¥'+p.price+'</div><button onclick="deleteProduct('+p._idx+')" style="background:#E53935;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:12px;margin-left:8px">删</button></div>'});html+="</div>"});html+="</div></div>"});list.innerHTML=html}
-function deleteProduct(i){if(!confirm("删除?"))return;var ps=GP();ps.splice(i,1);SP(ps);renderProducts();showToast("已删除")}
-function renderHistory(){var h=GH();var ks=Object.keys(h).sort(function(a,b){return b.localeCompare(a)});document.getElementById("histCount").innerHTML=ks.length;var list=document.getElementById("histList");if(!ks.length){list.innerHTML='<div class="empty-tip">暂无</div>';return}list.innerHTML=ks.map(function(k){var r=h[k];var t0=r[0]?r[0].t:0,t1=r[1]?r[1].t:0,t2=r[2]?r[2].t:0;var tot=t0+t2;return'<div style="border-bottom:1px solid #E0E0E0"><div style="padding:14px 16px;cursor:pointer" onclick="document.getElementById(\'hd'+k+'\').style.display=document.getElementById(\'hd'+k+'\').style.display==\'none\'?\'block\':\'none\'"><div style="display:flex;justify-content:space-between"><div><div style="font-weight:700">'+fmtDate(k)+'</div><div style="font-size:12px;color:#757575">提成¥'+t0+"·售后"+t1+"次·报销¥"+t2+'</div></div><div style="color:#FF6F00;font-weight:700;font-size:18px">'+(tot>0?fmtMoney(tot):"")+'</div></div></div><div id="hd'+k+'" style="display:none;background:#f5f7fa;padding:10px 16px;font-size:13px"><p>提成:¥'+t0+'</p><p>售后:'+t1+'次</p><p>报销:¥'+t2+'</p><button onclick="deleteHistory(\''+k+'\')" style="background:#E53935;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:12px;margin-top:8px">删除</button></div></div>'}).join("")}
-function deleteHistory(k){if(!confirm("删除?"))return;var h=GH();delete h[k];SH(h);renderHistory();showToast("已删除")}
-function showToast(msg){var t=document.getElementById("toast");t.innerHTML=msg;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},2200)}
-(function init(){var d=new Date();document.getElementById("headerDate").innerText=d.getMonth()+1+"月"+d.getDate()+"日";renderList(0)})();
+[0,1,2].forEach(function(j){if(i===j)rl(j);else document.getElementById("hr").innerHTML=""});
+if(i===3)rp();if(i===4)rh()}
+function getD(t){var d=GD();if(!d[tk()])d[tk()]={0:[],1:[],2:[]};return d[tk()][t]}
+function setD(t,v){var d=GD();if(!d[tk()])d[tk()]={0:[],1:[],2:[]};d[tk()][t]=v;SD(d)}
+function rl(t){
+var d=getD(t),l=document.getElementById("l"+t),s=document.getElementById("s"+t),b=document.getElementById("b"+t);
+if(b)b.innerHTML=fd(tk()).replace(/年/,"");
+if(!d.length){l.innerHTML="<div class=em>点击下方添加</div>";s.style.display="none";us(t,0);return}
+var h="",total=0;
+d.forEach(function(it,ix){if(t===0){var pr=GP().find(function(x){return x.id===it.p});if(!pr)return;var sb=it.q*pr.price;total+=sb;var sm=[pr.s,pr.m].filter(Boolean).join("·");h+='<div class=it><div class=l><div class=t>'+pr.cat+'</div><div class=m>'+sm+'·¥'+pr.price+'/件<br'+(it.c?"客户:"+it.c:"")+" "+(it.l?"地点:"+it.l:"")+'</div></div><div class=a>'+fm(sb)+'<div style=font-size:12px;color:#666>x'+it.q+'</div></div><button class=d onclick=rm('+t+","+ix+')>x</button></div>'}else if(t===1){total+=1;h+='<div class=it><div class=l><div class=t>'+it.c+'</div><div class=m>地址:'+it.a+'<br>问题:'+(it.p||"").substring(0,15)+'<br>结果:'+(it.r||"").substring(0,15)+'</div></div><button class=d onclick=rm('+t+","+ix+')>x</button></div>'}else if(t===2){total+=it.am;h+='<div class=it><div class=l><div class=t>'+it.t+'</div><div class=m>'+it.d+'</div></div><div class=a>'+fm(it.am)+'</div><button class=d onclick=rm('+t+","+ix+')>x</button></div>'}});
+l.innerHTML=h;s.style.display="block";us(t,total)}
+function us(t,total){if(t===0){document.getElementById("t0").innerHTML=fm(total);document.getElementById("hr").innerHTML=total>0?fm(total):""}else if(t===1){document.getElementById("t1").innerHTML=total;document.getElementById("hr").innerHTML=total>0?total+"次售后":""}else if(t===2){document.getElementById("t2").innerHTML=fm(total);document.getElementById("hr").innerHTML=total>0?fm(total):""}}
+function rm(t,ix){var d=getD(t);d.splice(ix,1);setD(t,d);rl(t)}
+function saveD(t){var d=getD(t);if(!d.length){sh("请先添加");return}var k=tk(),h=GH();if(!h[k])h[k]={0:{i:[],t:0},1:{i:[],t:0},2:{i:[],t:0}};var total=d.reduce(function(s,x){if(t===0){var pr=GP().find(function(p){return p.id===x.p});return s+(pr?x.q*pr.price:0)}else if(t===1){return s+1}else if(t===2){return s+x.am}return s},0);h[k][t]={i:d,t:total};SH(h);setD(t,[]);rl(t);sh("已保存")}
+function openM(t){if(t===0){var ps=GP();if(!ps.length){sh("请先添加产品");return}var cs=[...new Set(ps.map(function(p){return p.cat}))];document.getElementById("sc").innerHTML="<option value=>--请选--</option>"+cs.map(function(c){return"<option value="+c+">"+c+"</option>"}).join("");["gs","gm","gp"].forEach(function(id){document.getElementById(id).style.display="none"});document.getElementById("iq").value="";document.getElementById("ic").value="";document.getElementById("il").value=""}else if(t===1){["i1c","i1a","i1p","i1r"].forEach(function(id){document.getElementById(id).value=""})}else if(t===2){["i2t","i2d","i2a"].forEach(function(id){document.getElementById(id).value=""})}document.getElementById("m"+t).classList.add("open")}
+function closeM(t){document.getElementById("m"+t).classList.remove("open")}
+function addR(t){var d=getD(t);if(t===0){var cat=document.getElementById("sc").value,series=document.getElementById("ss").value,model=document.getElementById("sm").value,qty=parseInt(document.getElementById("iq").value),c=document.getElementById("ic").value.trim(),l=document.getElementById("il").value.trim();if(!cat||!qty||qty<=0){sh("请填写完整");return}var pr=GP().find(function(p){return p.cat===cat&&(!series||p.s===series)&&(!model||p.m===model)});if(!pr){sh("请完整选择");return}d.push({p:pr.id,q:qty,c:c,l:l})}else if(t===1){var c=document.getElementById("i1c").value.trim(),a=document.getElementById("i1a").value.trim(),p=document.getElementById("i1p").value.trim(),r=document.getElementById("i1r").value.trim();if(!c||!a||!p||!r){sh("请填写完整");return}d.push({c:c,a:a,p:p,r:r})}else if(t===2){var tt=document.getElementById("i2t").value.trim(),dd=document.getElementById("i2d").value.trim(),am=parseFloat(document.getElementById("i2a").value);if(!tt||!dd||!am||am<=0){sh("请填写完整");return}d.push({t:tt,d:dd,am:am})}setD(t,d);closeM(t);rl(t);sh("已添加")}
+function chc(){var cat=document.getElementById("sc").value,ps=GP();["gs","gm","gp"].forEach(function(id){document.getElementById(id).style.display="none"});if(!cat)return;var ss=[...new Set(ps.filter(function(p){return p.cat===cat}).map(function(p){return p.s}).filter(Boolean))];if(ss.length){document.getElementById("ss").innerHTML="<option value=>--请选--</option>"+ss.map(function(s){return"<option value="+s+">"+s+"</option>"}).join("");document.getElementById("gs").style.display="block"}else{fm0(cat,"")}}
+function chs(){var cat=document.getElementById("sc").value,series=document.getElementById("ss").value;if(!series)return;fm0(cat,series)}
+function fm0(cat,series){var ps=GP();var ms=[...new Set(ps.filter(function(p){return p.cat===cat&&(series===""||p.s===series)}).map(function(p){return p.m}).filter(Boolean))];if(ms.length){document.getElementById("sm").innerHTML="<option value=>--请选--</option>"+ms.map(function(m){return"<option value="+m+">"+m+"</option>"}).join("");document.getElementById("gm").style.display="block"}else{sh0(cat,series,"")}}
+function chm(){var cat=document.getElementById("sc").value,series=document.getElementById("ss").value,model=document.getElementById("sm").value;if(!model){document.getElementById("gp").style.display="none";return}sh0(cat,series,model)}
+function sh0(cat,series,model){var pr=GP().find(function(p){return p.cat===cat&&(!series||p.s===series)&&(!model||p.m===model)});if(pr){document.getElementById("pd").innerHTML="¥"+pr.price+"/件";document.getElementById("gp").style.display="block"}}
+var sc=0;
+function openPM(){document.getElementById("pca").value="";document.getElementById("sl").innerHTML="";sc=0;addSB();document.getElementById("pm").classList.add("open")}
+function closePM(){document.getElementById("pm").classList.remove("open")}
+function addSB(){sc++;var id="s"+sc;var h='<div style="background:#f5f7fa;border-radius:8px;padding:10px;margin-bottom:8px" id="'+id+'"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><label style="font-weight:bold;color:#1976d2">系列'+sc+'</label><button onclick="document.getElementById(\''+id+'\').remove()" style="background:none;border:none;color:#e53935;font-size:16px;cursor:pointer">x</button></div><input type="text" class="sname" placeholder="系列名" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;margin-bottom:6px"><div class="ml"><div style="display:flex;gap:6px;margin-bottom:4px"><input type="text" placeholder="型号" class="mname" style="flex:1;padding:8px;border:1px solid #ddd;border-radius:6px"><input type="number" placeholder="提成" class="pval" style="width:60px;padding:8px;border:1px solid #ddd;border-radius:6px" step="0.01"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#ccc;font-size:16px;cursor:pointer">x</button></div></div><button onclick="addMI(\''+id+'\')" style="background:none;border:1px dashed #1976d2;color:#1976d2;border-radius:4px;padding:4px;font-size:12px;width:100%">+型号</button></div>';document.getElementById("sl").insertAdjacentHTML("beforeend",h)}
+function addMI(sid){var el=document.getElementById(sid);var list=el.querySelector(".ml");list.insertAdjacentHTML("beforeend",'<div style="display:flex;gap:6px;margin-bottom:4px"><input type="text" placeholder="型号" class="mname" style="flex:1;padding:8px;border:1px solid #ddd;border-radius:6px"><input type="number" placeholder="提成" class="pval" style="width:60px;padding:8px;border:1px solid #ddd;border-radius:6px" step="0.01"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#ccc;font-size:16px;cursor:pointer">x</button></div>')}
+function saveBP(){var cat=document.getElementById("pca").value.trim();if(!cat){sh("请填类别");return}var blocks=document.querySelectorAll("#sl>div");if(blocks.length===0){sh("请加系列");return}var np=[],hv=false;blocks.forEach(function(b){var sn=b.querySelector(".sname").value.trim();var ms=b.querySelectorAll(".ml>div");ms.forEach(function(m){var mn=m.querySelector(".mname").value.trim(),pv=parseFloat(m.querySelector(".pval").value);if(mn&&!isNaN(pv)&&pv>0){hv=true;np.push({id:Date.now()+Math.random(),cat:cat,s:sn,m:mn,price:pv})}})});if(!hv){sh("请填型号提成");return}var ps=GP();ps.push.apply(ps,np);SP(ps);closePM();rp();sh("已添加"+np.length+"个")}
+function rp(){var ps=GP();document.getElementById("pc").innerHTML=ps.length;var l=document.getElementById("pl");if(!ps.length){l.innerHTML="<div class=em>暂无，点右下角+</div>";return}var cm={};ps.forEach(function(p,i){if(!cm[p.cat])cm[p.cat]={};var s=p.s||"__";if(!cm[p.cat][s])cm[p.cat][s]=[];cm[p.cat][s].push({...p,_i:i})});var h="";Object.keys(cm).forEach(function(cat){var sm=cm[cat];var ttl=Object.values(sm).reduce(function(s,a){return s+a.length},0);var cid="c"+encodeURIComponent(cat);h+='<div style="border-bottom:2px solid #e3f2fd"><div style="padding:10px;background:#e3f2fd;cursor:pointer" onclick="document.getElementById(\''+cid+'\').style.display=document.getElementById(\''+cid+'\').style.display==\'none\'?\'block\':\'none\'"><span style="font-weight:bold;color:#1976d2">'+cat+'</span><span style="font-size:12px;color:#666;margin-left:8px">'+ttl+'型</span></div><div id="'+cid+'" style="display:none">';Object.keys(sm).forEach(function(s){var its=sm[s];var sl=s==="__"?"无系列":s;its.forEach(function(p){h+='<div style="display:flex;padding:8px 10px 8px 20px;border-top:1px solid #eee;gap:6px"><div style="flex:1">'+p.m+'</div><div style="color:#ff6f00;font-weight:bold">¥'+p.price+'</div><button onclick="delP('+p._i+')" style="background:#e53935;color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:11px">删</button></div>'});h+="</div>"});h+="</div></div>"});l.innerHTML=h}
+function delP(i){if(!confirm("删?"))return;var ps=GP();ps.splice(i,1);SP(ps);rp();sh("已删")}
+function rh(){var h=GH();var ks=Object.keys(h).sort(function(a,b){return b.localeCompare(a)});document.getElementById("hc").innerHTML=ks.length;var l=document.getElementById("hl");if(!ks.length){l.innerHTML="<div class=em>暂无</div>";return}l.innerHTML=ks.map(function(k){var r=h[k];var t0=r[0]?r[0].t:0,t1=r[1]?r[1].t:0,t2=r[2]?r[2].t:0;var tot=t0+t2;return'<div style="border-bottom:1px solid #eee"><div style="padding:12px;cursor:pointer" onclick="document.getElementById(\'hd'+k+'\').style.display=document.getElementById(\'hd'+k+'\').style.display==\'none\'?\'block\':\'none\'"><div style="display:flex;justify-content:space-between"><div><div style="font-weight:bold">'+fd(k)+'</div><div style="font-size:12px;color:#666">提成¥'+t0+"·售后"+t1+"次·报销¥"+t2+'</div></div><div style="color:#ff6f00;font-weight:bold;font-size:16px">'+(tot>0?fm(tot):"")+'</div></div></div><div id="hd'+k+'" style="display:none;background:#f5f7fa;padding:10px;font-size:13px"><p>提成:¥'+t0+'</p><p>售后:'+t1+'次</p><p>报销:¥'+t2+'</p><button onclick="delH(\''+k+'\')" style="background:#e53935;color:#fff;border:none;border-radius:4px;padding:4px 10px;font-size:12px;margin-top:6px">删除</button></div></div>'}).join("")}
+function delH(k){if(!confirm("删?"))return;var h=GH();delete h[k];SH(h);rh();sh("已删")}
+function sh(msg){var t=document.getElementById("ts");t.innerHTML=msg;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},2200)}
+document.getElementById("sc").onchange=chc;
+document.getElementById("ss").onchange=chs;
+document.getElementById("sm").onchange=chm;
+(function init(){var d=new Date();document.getElementById("hd").innerText=(d.getMonth()+1)+"月"+d.getDate()+"日";rl(0)})();
 </script>
 </body>
 </html>
