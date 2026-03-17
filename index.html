@@ -43,11 +43,15 @@
     .summary-bar .pieces { font-size:13px; opacity:.85; margin-top:2px; }
 
     /* Daily record list */
-    .record-item { display:flex; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); gap:8px; }
+    .record-item { display:flex; align-items:flex-start; padding:12px 16px; border-bottom:1px solid var(--border); gap:8px; }
     .record-item:last-child { border-bottom:none; }
     .record-info { flex:1; }
     .record-name { font-size:15px; font-weight:600; }
     .record-meta { font-size:12px; color:var(--text2); margin-top:2px; }
+    .record-location { font-size:12px; color:var(--primary); margin-top:3px; }
+    .record-tags { display:flex; gap:6px; margin-top:4px; flex-wrap:wrap; }
+    .tag { display:inline-flex; align-items:center; gap:3px; background:var(--primary-light); color:var(--primary); border-radius:6px; padding:2px 8px; font-size:11px; font-weight:500; }
+    .tag.orange { background:#FFF3E0; color:var(--accent); }
     .record-right { text-align:right; }
     .record-subtotal { font-size:15px; color:var(--accent); font-weight:700; }
     .record-qty { font-size:12px; color:var(--text2); margin-top:2px; }
@@ -239,6 +243,14 @@
       <div id="priceDisplay" style="padding:11px 14px;background:#F5F7FA;border-radius:10px;font-size:15px;color:var(--accent);font-weight:600;"></div>
     </div>
     <div class="form-group">
+      <label>客户名称（选填）</label>
+      <input type="text" id="inputCustomer" placeholder="例如：张老板、华为工厂" />
+    </div>
+    <div class="form-group">
+      <label>安装地点（选填）</label>
+      <input type="text" id="inputLocation" placeholder="例如：3号车间、A栋2楼" />
+    </div>
+    <div class="form-group">
       <label>数量 *</label>
       <div class="qty-row">
         <input type="number" id="inputQty" placeholder="请输入数量" min="1" />
@@ -343,6 +355,10 @@ function renderToday() {
       <div class="record-info">
         <div class="record-name">${p.category}</div>
         <div class="record-meta">${sm||'无系列/型号'} · 提成 ¥${Number(p.price).toFixed(2)}/件</div>
+        <div class="record-tags">
+          ${item.customer ? `<span class="tag">👤 ${item.customer}</span>` : ''}
+          ${item.location ? `<span class="tag orange">📍 ${item.location}</span>` : ''}
+        </div>
       </div>
       <div class="record-right">
         <div class="record-subtotal">${fmtMoney(sub)}</div>
@@ -378,7 +394,7 @@ function saveToday() {
   const history = DB.history;
   const items = draft.map(item => {
     const p = prods.find(x=>x.id===item.prodId);
-    return { prodId:p.id, category:p.category, series:p.series, model:p.model, price:p.price, qty:item.qty };
+    return { prodId:p.id, category:p.category, series:p.series, model:p.model, price:p.price, qty:item.qty, customer:item.customer, location:item.location };
   });
   const total  = items.reduce((s,i)=>s+i.qty*i.price,0);
   const pieces = items.reduce((s,i)=>s+i.qty,0);
@@ -405,7 +421,9 @@ function openRecordModal() {
   document.getElementById('seriesGroup').style.display = 'none';
   document.getElementById('modelGroup').style.display  = 'none';
   document.getElementById('priceHint').style.display   = 'none';
-  document.getElementById('inputQty').value = '';
+  document.getElementById('inputQty').value      = '';
+  document.getElementById('inputCustomer').value = '';
+  document.getElementById('inputLocation').value = '';
   document.getElementById('qtyHint').textContent = '';
   document.getElementById('recordModal').classList.add('open');
 }
@@ -489,11 +507,13 @@ function onModelChange() {
 }
 
 function addRecord() {
-  const cat    = document.getElementById('selCategory').value;
-  const series = document.getElementById('selSeries').value;
-  const model  = document.getElementById('selModel').value;
-  const qty    = parseInt(document.getElementById('inputQty').value);
-  const prods  = DB.products;
+  const cat      = document.getElementById('selCategory').value;
+  const series   = document.getElementById('selSeries').value;
+  const model    = document.getElementById('selModel').value;
+  const qty      = parseInt(document.getElementById('inputQty').value);
+  const customer = document.getElementById('inputCustomer').value.trim();
+  const location = document.getElementById('inputLocation').value.trim();
+  const prods    = DB.products;
 
   if (!cat) { showToast('请选择类别'); return; }
   if (!qty || qty<=0) { showToast('请填写有效数量'); return; }
@@ -507,7 +527,7 @@ function addRecord() {
   if (!prod) { showToast('未找到对应产品，请检查选择'); return; }
 
   const draft = DB.draft;
-  draft.push({ prodId: prod.id, qty });
+  draft.push({ prodId: prod.id, qty, customer, location });
   DB.draft = draft;
 
   closeRecordModal();
@@ -598,6 +618,8 @@ function renderHistory() {
       return `<tr>
         <td style="text-align:left;">${it.category}</td>
         <td>${sm}</td>
+        <td>${it.customer||'—'}</td>
+        <td>${it.location||'—'}</td>
         <td>¥${Number(it.price).toFixed(2)}</td>
         <td>${it.qty}</td>
         <td style="color:var(--accent);">¥${(it.qty*it.price).toFixed(2)}</td>
@@ -615,7 +637,7 @@ function renderHistory() {
       </div>
       <div class="history-detail" id="detail-${key}">
         <table>
-          <thead><tr><th style="text-align:left;">类别</th><th>系列/型号</th><th>提成</th><th>数量</th><th>小计</th></tr></thead>
+          <thead><tr><th style="text-align:left;">类别</th><th>系列/型号</th><th>客户</th><th>地点</th><th>提成</th><th>数量</th><th>小计</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
         <div style="text-align:right;padding:8px 4px 4px;">
