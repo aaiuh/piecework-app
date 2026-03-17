@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>计件工作记录</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --primary: #1976D2;
+      --primary-light: #E3F2FD;
+      --accent: #FF6F00;
+      --danger: #E53935;
+      --success: #43A047;
+      --bg: #F5F7FA;
+      --card: #FFFFFF;
+      --text: #212121;
+      --text2: #757575;
+      --border: #E0E0E0;
+      --radius: 12px;
+      --tab-h: 56px;
+      --header-h: 56px;
+    }
+
+    body {
+      font-family: -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      height: var(--header-h);
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,.2);
+    }
+    .header h1 { font-size: 18px; font-weight: 600; }
+    .header-date { font-size: 13px; opacity: .85; }
+
+    /* ── Tab Bar ── */
+    .tab-bar {
+      height: var(--tab-h);
+      background: #fff;
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      flex: 1;
+      border: none;
+      background: none;
+      font-size: 13px;
+      color: var(--text2);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      position: relative;
+      transition: color .2s;
+    }
+    .tab-btn .tab-icon { font-size: 20px; }
+    .tab-btn.active { color: var(--primary); }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 10%; right: 10%;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* ── Pages ── */
+    .page { display: none; flex: 1; overflow-y: auto; padding: 12px; }
+    .page.active { display: block; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 12px 16px;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-header h3 { font-size: 15px; color: var(--primary); font-weight: 600; }
+
+    /* ── Summary Bar ── */
+    .summary-bar {
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .summary-bar .label { font-size: 13px; opacity: .85; }
+    .summary-bar .amount { font-size: 26px; font-weight: 700; }
+    .summary-bar .pieces { font-size: 13px; opacity: .85; margin-top: 2px; }
+
+    /* ── Today Table ── */
+    .today-table { width: 100%; border-collapse: collapse; }
+    .today-table th {
+      background: #F5F7FA;
+      font-size: 12px;
+      color: var(--text2);
+      padding: 8px 6px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .today-table td {
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .today-table tr:last-child td { border-bottom: none; }
+    .today-table .subtotal { color: var(--accent); font-weight: 600; }
+    .qty-input {
+      width: 64px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 4px;
+      text-align: center;
+      font-size: 15px;
+      background: #fff;
+    }
+    .qty-input:focus { outline: none; border-color: var(--primary); }
+    .empty-tip {
+      text-align: center;
+      color: var(--text2);
+      padding: 32px 16px;
+      font-size: 14px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: opacity .15s;
+    }
+    .btn:active { opacity: .75; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-accent  { background: var(--accent);  color: #fff; }
+    .btn-danger  { background: var(--danger);  color: #fff; }
+    .btn-ghost   { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
+    .btn-full { width: 100%; padding: 14px; font-size: 16px; border-radius: var(--radius); }
+
+    /* ── Save Row ── */
+    .save-row {
+      padding: 12px 16px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Category List ── */
+    .cat-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .cat-item:last-child { border-bottom: none; }
+    .cat-info { flex: 1; }
+    .cat-name { font-size: 15px; font-weight: 600; }
+    .cat-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .cat-price { font-size: 15px; color: var(--accent); font-weight: 600; min-width: 60px; text-align: right; }
+    .cat-actions { display: flex; gap: 6px; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 480px;
+      padding: 20px 20px 32px;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 16px; text-align: center; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { font-size: 13px; color: var(--text2); margin-bottom: 5px; display: block; }
+    .form-group input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 15px;
+      background: #fff;
+    }
+    .form-group input:focus { outline: none; border-color: var(--primary); }
+    .modal-btns { display: flex; gap: 10px; margin-top: 18px; }
+    .modal-btns .btn { flex: 1; padding: 13px; font-size: 15px; }
+
+    /* ── History ── */
+    .history-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-date { font-size: 15px; font-weight: 600; }
+    .history-meta { font-size: 13px; color: var(--text2); margin-top: 3px; }
+    .history-total { font-size: 18px; color: var(--accent); font-weight: 700; }
+    .history-row { display: flex; justify-content: space-between; align-items: center; }
+
+    .history-detail {
+      background: #F5F7FA;
+      padding: 10px 16px;
+      display: none;
+    }
+    .history-detail.open { display: block; }
+    .history-detail table { width: 100%; font-size: 13px; border-collapse: collapse; }
+    .history-detail th { color: var(--text2); padding: 4px 4px; text-align: center; font-weight: 500; }
+    .history-detail td { padding: 5px 4px; text-align: center; border-top: 1px solid var(--border); }
+
+    /* ── FAB ── */
+    .fab {
+      position: fixed;
+      bottom: calc(var(--tab-h) + 16px);
+      right: 16px;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 28px;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 50;
+      transition: transform .15s;
+    }
+    .fab:active { transform: scale(.92); }
+
+    .toast {
+      position: fixed;
+      bottom: calc(var(--tab-h) + 80px);
+      left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,.75);
+      color: #fff;
+      padding: 9px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+
+    .badge {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <div class="header h1" style="font-size:18px;font-weight:600;">📦 计件记录</div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+  <div id="headerTotal" style="font-size:20px;font-weight:700;color:#FFD54F;"></div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)" id="tab0">
+    <span class="tab-icon">📋</span>今日记录
+  </button>
+  <button class="tab-btn" onclick="switchTab(1)" id="tab1">
+    <span class="tab-icon">📦</span>品类管理
+  </button>
+  <button class="tab-btn" onclick="switchTab(2)" id="tab2">
+    <span class="tab-icon">📅</span>历史汇总
+  </button>
+</div>
+
+<!-- Page 0: 今日记录 -->
+<div class="page active" id="page0">
+  <div class="summary-bar">
+    <div>
+      <div class="label">今日总收入</div>
+      <div class="amount" id="todayTotal">¥0.00</div>
+      <div class="pieces" id="todayPieces">共 0 件</div>
+    </div>
+    <div style="font-size:36px;">💰</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>今日工作明细</h3>
+      <span class="badge" id="todayDateBadge"></span>
+    </div>
+    <div id="todayTableWrap">
+      <div class="empty-tip">暂无品类，请先在「品类管理」中添加</div>
+    </div>
+    <div class="save-row" id="saveRow" style="display:none;">
+      <button class="btn btn-primary btn-full" onclick="saveToday()">💾 保存今日记录</button>
+    </div>
+  </div>
+</div>
+
+<!-- Page 1: 品类管理 -->
+<div class="page" id="page1">
+  <div class="card">
+    <div class="card-header">
+      <h3>品类 / 型号列表</h3>
+      <span class="badge" id="catCount">0 个</span>
+    </div>
+    <div id="catList">
+      <div class="empty-tip">还没有品类，点击右下角 + 添加</div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 2: 历史汇总 -->
+<div class="page" id="page2">
+  <div class="card">
+    <div class="card-header">
+      <h3>历史记录</h3>
+      <span class="badge" id="historyCount">0 天</span>
+    </div>
+    <div id="historyList">
+      <div class="empty-tip">还没有历史记录</div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="openAddModal()" style="display:none;">＋</button>
+
+<!-- Modal: 添加/编辑品类 -->
+<div class="modal-overlay" id="catModal">
+  <div class="modal">
+    <h3 id="modalTitle">添加品类</h3>
+    <div class="form-group">
+      <label>品类名称 *</label>
+      <input type="text" id="inputName" placeholder="例如：衬衫、零件A" />
+    </div>
+    <div class="form-group">
+      <label>型号（选填）</label>
+      <input type="text" id="inputModel" placeholder="例如：XL码、M8螺丝" />
+    </div>
+    <div class="form-group">
+      <label>单价（元/件）*</label>
+      <input type="number" id="inputPrice" placeholder="例如：1.50" step="0.01" min="0" />
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveCategory()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Data Layer ──────────────────────────────────────────────
+const DB = {
+  get categories() { return JSON.parse(localStorage.getItem('pw_cats') || '[]'); },
+  set categories(v) { localStorage.setItem('pw_cats', JSON.stringify(v)); },
+  get history() { return JSON.parse(localStorage.getItem('pw_history') || '{}'); },
+  set history(v) { localStorage.setItem('pw_history', JSON.stringify(v)); },
+  get draft() { return JSON.parse(localStorage.getItem('pw_draft') || '{}'); },
+  set draft(v) { localStorage.setItem('pw_draft', JSON.stringify(v)); },
+};
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function fmtDate(key) {
+  const [y,m,d] = key.split('-');
+  const days = ['日','一','二','三','四','五','六'];
+  const w = new Date(+y,+m-1,+d).getDay();
+  return `${y}年${m}月${d}日 周${days[w]}`;
+}
+
+function fmtMoney(n) {
+  return '¥' + Number(n).toFixed(2);
+}
+
+// ── Tab ─────────────────────────────────────────────────────
+let currentTab = 0;
+function switchTab(i) {
+  document.querySelectorAll('.tab-btn').forEach((b,j) => b.classList.toggle('active', i===j));
+  document.querySelectorAll('.page').forEach((p,j) => p.classList.toggle('active', i===j));
+  document.getElementById('fab').style.display = i===1 ? 'flex' : 'none';
+  currentTab = i;
+  if (i===0) renderToday();
+  if (i===1) renderCategories();
+  if (i===2) renderHistory();
+}
+
+// ── Today ────────────────────────────────────────────────────
+function renderToday() {
+  const cats = DB.categories;
+  const draft = DB.draft;
+  const key = todayKey();
+  const wrap = document.getElementById('todayTableWrap');
+  const saveRow = document.getElementById('saveRow');
+  document.getElementById('todayDateBadge').textContent = fmtDate(key).replace(/\d{4}年/,'');
+
+  if (!cats.length) {
+    wrap.innerHTML = '<div class="empty-tip">暂无品类，请先在「品类管理」中添加</div>';
+    saveRow.style.display = 'none';
+    updateTodaySummary(0, 0);
+    return;
+  }
+
+  let html = `<table class="today-table">
+    <thead><tr>
+      <th>品类/型号</th><th>单价</th><th>数量</th><th>小计</th>
+    </tr></thead><tbody>`;
+
+  cats.forEach(cat => {
+    const qty = draft[cat.id] !== undefined ? draft[cat.id] : '';
+    const sub = qty !== '' && qty > 0 ? (qty * cat.price).toFixed(2) : '—';
+    html += `<tr>
+      <td style="text-align:left;padding-left:12px;">
+        <div style="font-weight:600;font-size:14px;">${cat.name}</div>
+        ${cat.model ? `<div style="font-size:11px;color:#999;">${cat.model}</div>` : ''}
+      </td>
+      <td style="color:#FF6F00;">¥${Number(cat.price).toFixed(2)}</td>
+      <td><input class="qty-input" type="number" min="0" value="${qty}"
+        oninput="updateQty('${cat.id}', this.value)"
+        onchange="updateQty('${cat.id}', this.value)" /></td>
+      <td class="subtotal">${sub !== '—' ? '¥'+sub : sub}</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+  saveRow.style.display = 'block';
+  recalcToday();
+}
+
+function updateQty(id, val) {
+  const draft = DB.draft;
+  const n = parseFloat(val);
+  if (val === '' || isNaN(n) || n < 0) {
+    delete draft[id];
+  } else {
+    draft[id] = n;
+  }
+  DB.draft = draft;
+  recalcToday();
+  // update subtotal cell inline
+  const cats = DB.categories;
+  const cat = cats.find(c => c.id === id);
+  if (!cat) return;
+  const rows = document.querySelectorAll('.today-table tbody tr');
+  cats.forEach((c, i) => {
+    if (c.id === id) {
+      const sub = rows[i].querySelector('.subtotal');
+      const qty = draft[id];
+      sub.textContent = qty > 0 ? '¥'+(qty*c.price).toFixed(2) : '—';
+    }
+  });
+}
+
+function recalcToday() {
+  const cats = DB.categories;
+  const draft = DB.draft;
+  let total = 0, pieces = 0;
+  cats.forEach(c => {
+    const q = draft[c.id] || 0;
+    total += q * c.price;
+    pieces += q;
+  });
+  updateTodaySummary(total, pieces);
+}
+
+function updateTodaySummary(total, pieces) {
+  document.getElementById('todayTotal').textContent = fmtMoney(total);
+  document.getElementById('todayPieces').textContent = `共 ${pieces} 件`;
+  document.getElementById('headerTotal').textContent = total > 0 ? fmtMoney(total) : '';
+}
+
+function saveToday() {
+  const cats = DB.categories;
+  const draft = DB.draft;
+  const key = todayKey();
+  const history = DB.history;
+
+  const items = cats
+    .filter(c => draft[c.id] > 0)
+    .map(c => ({ id: c.id, name: c.name, model: c.model, price: c.price, qty: draft[c.id] }));
+
+  if (!items.length) { showToast('请先填写数量'); return; }
+
+  const total = items.reduce((s, i) => s + i.qty * i.price, 0);
+  const pieces = items.reduce((s, i) => s + i.qty, 0);
+
+  history[key] = { items, total, pieces, savedAt: Date.now() };
+  DB.history = history;
+  DB.draft = {};
+
+  showToast('✅ 今日记录已保存！');
+  renderToday();
+}
+
+// ── Categories ───────────────────────────────────────────────
+function renderCategories() {
+  const cats = DB.categories;
+  const list = document.getElementById('catList');
+  document.getElementById('catCount').textContent = cats.length + ' 个';
+
+  if (!cats.length) {
+    list.innerHTML = '<div class="empty-tip">还没有品类，点击右下角 + 添加</div>';
+    return;
+  }
+
+  list.innerHTML = cats.map((c, i) => `
+    <div class="cat-item">
+      <div class="cat-info">
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-meta">${c.model ? '型号：' + c.model : '无型号'}</div>
+      </div>
+      <div class="cat-price">¥${Number(c.price).toFixed(2)}<br><span style="font-size:11px;color:#999;font-weight:400;">/件</span></div>
+      <div class="cat-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openEditModal(${i})">编辑</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCategory(${i})">删除</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+let editIndex = -1;
+function openAddModal() {
+  editIndex = -1;
+  document.getElementById('modalTitle').textContent = '添加品类';
+  document.getElementById('inputName').value = '';
+  document.getElementById('inputModel').value = '';
+  document.getElementById('inputPrice').value = '';
+  document.getElementById('catModal').classList.add('open');
+  setTimeout(() => document.getElementById('inputName').focus(), 300);
+}
+
+function openEditModal(i) {
+  const cat = DB.categories[i];
+  editIndex = i;
+  document.getElementById('modalTitle').textContent = '编辑品类';
+  document.getElementById('inputName').value = cat.name;
+  document.getElementById('inputModel').value = cat.model || '';
+  document.getElementById('inputPrice').value = cat.price;
+  document.getElementById('catModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('catModal').classList.remove('open');
+}
+
+function saveCategory() {
+  const name = document.getElementById('inputName').value.trim();
+  const model = document.getElementById('inputModel').value.trim();
+  const price = parseFloat(document.getElementById('inputPrice').value);
+
+  if (!name) { showToast('请填写品类名称'); return; }
+  if (isNaN(price) || price <= 0) { showToast('请填写有效单价'); return; }
+
+  const cats = DB.categories;
+  if (editIndex === -1) {
+    cats.push({ id: Date.now().toString(), name, model, price });
+    showToast('✅ 品类已添加');
+  } else {
+    cats[editIndex] = { ...cats[editIndex], name, model, price };
+    showToast('✅ 品类已更新');
+  }
+  DB.categories = cats;
+  closeModal();
+  renderCategories();
+}
+
+function deleteCategory(i) {
+  if (!confirm('确定删除这个品类吗？')) return;
+  const cats = DB.categories;
+  cats.splice(i, 1);
+  DB.categories = cats;
+  showToast('已删除');
+  renderCategories();
+}
+
+// ── History ──────────────────────────────────────────────────
+function renderHistory() {
+  const history = DB.history;
+  const keys = Object.keys(history).sort((a,b) => b.localeCompare(a));
+  const list = document.getElementById('historyList');
+  document.getElementById('historyCount').textContent = keys.length + ' 天';
+
+  if (!keys.length) {
+    list.innerHTML = '<div class="empty-tip">还没有历史记录</div>';
+    return;
+  }
+
+  list.innerHTML = keys.map(key => {
+    const rec = history[key];
+    const detailRows = rec.items.map(it =>
+      `<tr><td style="text-align:left;">${it.name}${it.model?' ('+it.model+')':''}</td>
+       <td>¥${Number(it.price).toFixed(2)}</td>
+       <td>${it.qty}</td>
+       <td style="color:#FF6F00;">¥${(it.qty*it.price).toFixed(2)}</td></tr>`
+    ).join('');
+
+    return `
+    <div>
+      <div class="history-item" onclick="toggleDetail('${key}')">
+        <div class="history-row">
+          <div>
+            <div class="history-date">${fmtDate(key)}</div>
+            <div class="history-meta">共 ${rec.pieces} 件 · 点击查看明细</div>
+          </div>
+          <div class="history-total">${fmtMoney(rec.total)}</div>
+        </div>
+      </div>
+      <div class="history-detail" id="detail-${key}">
+        <table>
+          <thead><tr><th style="text-align:left;">品类</th><th>单价</th><th>数量</th><th>小计</th></tr></thead>
+          <tbody>${detailRows}</tbody>
+        </table>
+        <div style="text-align:right;padding:8px 4px 4px;font-size:13px;color:#757575;">
+          <button class="btn btn-danger btn-sm" onclick="deleteHistory('${key}')">删除此记录</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDetail(key) {
+  const el = document.getElementById('detail-' + key);
+  el.classList.toggle('open');
+}
+
+function deleteHistory(key) {
+  if (!confirm('确定删除 ' + fmtDate(key) + ' 的记录吗？')) return;
+  const history = DB.history;
+  delete history[key];
+  DB.history = history;
+  showToast('已删除');
+  renderHistory();
+}
+
+// ── Toast ────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ── Init ─────────────────────────────────────────────────────
+function init() {
+  const d = new Date();
+  const days = ['日','一','二','三','四','五','六'];
+  document.getElementById('headerDate').textContent =
+    `${d.getMonth()+1}月${d.getDate()}日 周${days[d.getDay()]}`;
+  renderToday();
+}
+
+init();
+</script>
+</body>
+</html>
