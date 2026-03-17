@@ -428,6 +428,27 @@ body {
     </div>
   </div>
 
+  <!-- 售后 -->
+  <div class="page" id="page3">
+    <div class="summary-bar">
+      <div>
+        <div class="label">今日售后</div>
+        <div class="value" id="afterCount">0 条</div>
+      </div>
+      <div style="font-size:40px">🔧</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3>售后记录</h3>
+        <span class="badge" id="badge3"></span>
+      </div>
+      <div id="afterList"><div class="empty-tip">暂无售后记录，点下方添加</div></div>
+      <div style="padding:12px;border-top:1px solid var(--border)">
+        <button class="add-btn" onclick="openAfterModal()">+ 添加售后</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 历史 -->
   <div class="page" id="page2">
     <div class="card">
@@ -452,6 +473,10 @@ body {
   <button class="tab-btn" onclick="switchTab(1)">
     <span class="tab-icon">📦</span>
     <span>产品</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab(3)">
+    <span class="tab-icon">🔧</span>
+    <span>售后</span>
   </button>
   <button class="tab-btn" onclick="switchTab(2)">
     <span class="tab-icon">📅</span>
@@ -529,11 +554,35 @@ body {
 
 <div class="toast" id="toast"></div>
 
+<!-- 售后 Modal -->
+<div class="modal-overlay" id="afterModal">
+  <div class="modal">
+    <h3>添加售后记录</h3>
+    <div class="form-group">
+      <label>客户名称 *</label>
+      <input type="text" id="afterCustomer" placeholder="请输入客户姓名">
+    </div>
+    <div class="form-group">
+      <label>原因 *</label>
+      <textarea id="afterReason" placeholder="请描述售后原因" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:15px;height:80px;resize:none"></textarea>
+    </div>
+    <div class="form-group">
+      <label>结果 *</label>
+      <textarea id="afterResult" placeholder="请描述处理结果" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:15px;height:80px;resize:none"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeAfterModal()">取消</button>
+      <button class="btn-solid" onclick="confirmAfterRecord()">添加</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ─── 存储 ───────────────────────────────────────────────
 var KEY_PRODS = 'pw_prods';
 var KEY_DRAFT = 'pw_draft';
 var KEY_HIST  = 'pw_hist';
+var KEY_AFTER = 'pw_after';
 
 function getProds() {
   return JSON.parse(localStorage.getItem(KEY_PRODS) || '[]');
@@ -552,6 +601,12 @@ function getHist() {
 }
 function setHist(v) {
   localStorage.setItem(KEY_HIST, JSON.stringify(v));
+}
+function getAfter() {
+  return JSON.parse(localStorage.getItem(KEY_AFTER) || '[]');
+}
+function setAfter(v) {
+  localStorage.setItem(KEY_AFTER, JSON.stringify(v));
 }
 
 // ─── 工具 ───────────────────────────────────────────────
@@ -591,6 +646,7 @@ function switchTab(i) {
   if (i === 0) renderRecordList();
   if (i === 1) renderProducts();
   if (i === 2) renderHistory();
+  if (i === 3) renderAfterList();
 }
 
 // ─── 每日记录 ────────────────────────────────────────────
@@ -926,6 +982,69 @@ function saveProducts() {
   closeProdModal();
   renderProducts();
   showToast('已添加 ' + newProds.length + ' 个产品');
+}
+
+// ─── 售后 ────────────────────────────────────────────────
+function renderAfterList() {
+  var list = getAfter();
+  var el = document.getElementById('afterList');
+  var badge = document.getElementById('badge3');
+  var today = todayKey();
+  var todayItems = list.filter(function(r) { return r.date === today; });
+  document.getElementById('afterCount').textContent = todayItems.length + ' 条';
+  if (badge) badge.textContent = fmtDate(today).replace(/^\d{4}年/, '');
+  if (!list.length) {
+    el.innerHTML = '<div class="empty-tip">暂无售后记录，点下方添加</div>';
+    return;
+  }
+  var html = '';
+  list.slice().reverse().forEach(function(item, idx) {
+    var realIdx = list.length - 1 - idx;
+    html += '<div class="record-item">'
+      + '<div class="record-info">'
+      + '<div class="record-title">' + item.customer + '</div>'
+      + '<div class="record-meta">'
+      + '<span style="color:#1976D2">原因：</span>' + item.reason + '<br>'
+      + '<span style="color:#4CAF50">结果：</span>' + item.result + '<br>'
+      + '<span style="color:#aaa;font-size:11px">' + fmtDate(item.date) + '</span>'
+      + '</div>'
+      + '</div>'
+      + '<button class="delete-btn" onclick="deleteAfter(' + realIdx + ')">×</button>'
+      + '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function openAfterModal() {
+  document.getElementById('afterCustomer').value = '';
+  document.getElementById('afterReason').value = '';
+  document.getElementById('afterResult').value = '';
+  document.getElementById('afterModal').classList.add('open');
+}
+function closeAfterModal() {
+  document.getElementById('afterModal').classList.remove('open');
+}
+function confirmAfterRecord() {
+  var customer = document.getElementById('afterCustomer').value.trim();
+  var reason   = document.getElementById('afterReason').value.trim();
+  var result   = document.getElementById('afterResult').value.trim();
+  if (!customer) { showToast('请填写客户名称'); return; }
+  if (!reason)   { showToast('请填写原因'); return; }
+  if (!result)   { showToast('请填写结果'); return; }
+  var list = getAfter();
+  list.push({ customer: customer, reason: reason, result: result, date: todayKey() });
+  setAfter(list);
+  closeAfterModal();
+  renderAfterList();
+  showToast('已添加');
+}
+function deleteAfter(idx) {
+  if (!confirm('确认删除该售后记录？')) return;
+  var list = getAfter();
+  list.splice(idx, 1);
+  setAfter(list);
+  renderAfterList();
+  showToast('已删除');
 }
 
 // ─── 历史 ────────────────────────────────────────────────
