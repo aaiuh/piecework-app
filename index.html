@@ -33,13 +33,7 @@
       overflow: hidden;
     }
 
-    /* ── Bottom Tab Bar layout ── */
-    .main-content {
-      flex: 1;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
+    .main-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 
     /* ── Header ── */
     .header {
@@ -53,7 +47,6 @@
       flex-shrink: 0;
       box-shadow: 0 2px 6px rgba(0,0,0,.2);
     }
-    .header h1 { font-size: 18px; font-weight: 600; }
     .header-date { font-size: 13px; opacity: .85; }
 
     /* ── Tab Bar (bottom) ── */
@@ -66,28 +59,17 @@
       box-shadow: 0 -2px 8px rgba(0,0,0,.07);
     }
     .tab-btn {
-      flex: 1;
-      border: none;
-      background: none;
-      font-size: 13px;
-      color: var(--text2);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      position: relative;
-      transition: color .2s;
+      flex: 1; border: none; background: none;
+      font-size: 13px; color: var(--text2); cursor: pointer;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 3px; position: relative; transition: color .2s;
     }
     .tab-btn .tab-icon { font-size: 20px; }
     .tab-btn.active { color: var(--primary); }
     .tab-btn.active::after {
-      content: '';
-      position: absolute;
+      content: ''; position: absolute;
       top: 0; left: 10%; right: 10%;
-      height: 3px;
-      background: var(--primary);
+      height: 3px; background: var(--primary);
       border-radius: 0 0 3px 3px;
     }
 
@@ -97,32 +79,21 @@
 
     /* ── Cards ── */
     .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: 0 1px 4px rgba(0,0,0,.08);
-      margin-bottom: 12px;
-      overflow: hidden;
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 12px; overflow: hidden;
     }
     .card-header {
-      padding: 12px 16px;
-      background: var(--primary-light);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      padding: 12px 16px; background: var(--primary-light);
+      display: flex; align-items: center; justify-content: space-between;
       border-bottom: 1px solid var(--border);
     }
     .card-header h3 { font-size: 15px; color: var(--primary); font-weight: 600; }
 
     /* ── Summary Bar ── */
     .summary-bar {
-      background: var(--primary);
-      color: #fff;
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: var(--primary); color: #fff; border-radius: var(--radius);
+      padding: 14px 16px; margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center;
     }
     .summary-bar .label { font-size: 13px; opacity: .85; }
     .summary-bar .amount { font-size: 26px; font-weight: 700; }
@@ -131,94 +102,58 @@
     /* ── Today Table ── */
     .today-table { width: 100%; border-collapse: collapse; }
     .today-table th {
-      background: #F5F7FA;
-      font-size: 12px;
-      color: var(--text2);
-      padding: 8px 6px;
-      text-align: center;
-      font-weight: 500;
+      background: #F5F7FA; font-size: 11px; color: var(--text2);
+      padding: 8px 4px; text-align: center; font-weight: 500;
     }
     .today-table td {
-      padding: 10px 6px;
-      text-align: center;
-      font-size: 14px;
+      padding: 9px 4px; text-align: center; font-size: 13px;
       border-bottom: 1px solid var(--border);
     }
     .today-table tr:last-child td { border-bottom: none; }
     .today-table .subtotal { color: var(--accent); font-weight: 600; }
     .qty-input {
-      width: 64px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 6px 4px;
-      text-align: center;
-      font-size: 15px;
-      background: #fff;
+      width: 60px; border: 1px solid var(--border); border-radius: 8px;
+      padding: 6px 4px; text-align: center; font-size: 15px; background: #fff;
     }
     .qty-input:focus { outline: none; border-color: var(--primary); }
-    .empty-tip {
-      text-align: center;
-      color: var(--text2);
-      padding: 32px 16px;
-      font-size: 14px;
-    }
+    .empty-tip { text-align: center; color: var(--text2); padding: 32px 16px; font-size: 14px; }
 
     /* ── Buttons ── */
     .btn {
-      border: none;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: opacity .15s;
+      border: none; border-radius: 8px; padding: 8px 16px;
+      font-size: 14px; cursor: pointer; font-weight: 500; transition: opacity .15s;
     }
     .btn:active { opacity: .75; }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-accent  { background: var(--accent);  color: #fff; }
     .btn-danger  { background: var(--danger);  color: #fff; }
     .btn-ghost   { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
     .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
     .btn-full { width: 100%; padding: 14px; font-size: 16px; border-radius: var(--radius); }
 
-    /* ── Save Row ── */
-    .save-row {
-      padding: 12px 16px;
-      background: #fff;
-      border-top: 1px solid var(--border);
-    }
+    .save-row { padding: 12px 16px; background: #fff; border-top: 1px solid var(--border); }
 
-    /* ── Category List ── */
-    .cat-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      gap: 10px;
+    /* ── Product List ── */
+    .prod-item {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
     }
-    .cat-item:last-child { border-bottom: none; }
-    .cat-info { flex: 1; }
-    .cat-name { font-size: 15px; font-weight: 600; }
-    .cat-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
-    .cat-price { font-size: 15px; color: var(--accent); font-weight: 600; min-width: 60px; text-align: right; }
-    .cat-actions { display: flex; gap: 6px; }
+    .prod-item:last-child { border-bottom: none; }
+    .prod-info { flex: 1; }
+    .prod-name { font-size: 15px; font-weight: 600; }
+    .prod-meta { font-size: 12px; color: var(--text2); margin-top: 3px; }
+    .prod-price { font-size: 15px; color: var(--accent); font-weight: 600; min-width: 58px; text-align: right; }
+    .prod-actions { display: flex; gap: 6px; }
 
     /* ── Modal ── */
     .modal-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.5);
-      z-index: 100;
-      align-items: flex-end;
-      justify-content: center;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 100;
+      align-items: flex-end; justify-content: center;
     }
     .modal-overlay.open { display: flex; }
     .modal {
-      background: #fff;
-      border-radius: 20px 20px 0 0;
-      width: 100%;
-      max-width: 480px;
-      padding: 20px 20px 32px;
+      background: #fff; border-radius: 20px 20px 0 0;
+      width: 100%; max-width: 480px; padding: 20px 20px 32px;
       animation: slideUp .25s ease;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -226,12 +161,8 @@
     .form-group { margin-bottom: 14px; }
     .form-group label { font-size: 13px; color: var(--text2); margin-bottom: 5px; display: block; }
     .form-group input {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-size: 15px;
-      background: #fff;
+      width: 100%; border: 1px solid var(--border); border-radius: 10px;
+      padding: 11px 14px; font-size: 15px; background: #fff;
     }
     .form-group input:focus { outline: none; border-color: var(--primary); }
     .modal-btns { display: flex; gap: 10px; margin-top: 18px; }
@@ -239,70 +170,43 @@
 
     /* ── History ── */
     .history-item {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
+      padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer;
     }
     .history-item:last-child { border-bottom: none; }
     .history-date { font-size: 15px; font-weight: 600; }
     .history-meta { font-size: 13px; color: var(--text2); margin-top: 3px; }
     .history-total { font-size: 18px; color: var(--accent); font-weight: 700; }
     .history-row { display: flex; justify-content: space-between; align-items: center; }
-
-    .history-detail {
-      background: #F5F7FA;
-      padding: 10px 16px;
-      display: none;
-    }
+    .history-detail { background: #F5F7FA; padding: 10px 16px; display: none; }
     .history-detail.open { display: block; }
-    .history-detail table { width: 100%; font-size: 13px; border-collapse: collapse; }
-    .history-detail th { color: var(--text2); padding: 4px 4px; text-align: center; font-weight: 500; }
+    .history-detail table { width: 100%; font-size: 12px; border-collapse: collapse; }
+    .history-detail th { color: var(--text2); padding: 4px; text-align: center; font-weight: 500; }
     .history-detail td { padding: 5px 4px; text-align: center; border-top: 1px solid var(--border); }
 
     /* ── FAB ── */
     .fab {
-      position: fixed;
-      bottom: calc(var(--tab-h) + 16px);
-      right: 16px;
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #fff;
-      font-size: 28px;
-      border: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,.25);
-      cursor: pointer;
+      position: fixed; bottom: calc(var(--tab-h) + 16px); right: 16px;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--accent); color: #fff; font-size: 28px; border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25); cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      z-index: 50;
-      transition: transform .15s;
+      z-index: 50; transition: transform .15s;
     }
     .fab:active { transform: scale(.92); }
 
     .toast {
-      position: fixed;
-      bottom: calc(var(--tab-h) + 80px);
+      position: fixed; bottom: calc(var(--tab-h) + 80px);
       left: 50%; transform: translateX(-50%);
-      background: rgba(0,0,0,.75);
-      color: #fff;
-      padding: 9px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      z-index: 200;
-      opacity: 0;
-      transition: opacity .3s;
-      pointer-events: none;
-      white-space: nowrap;
+      background: rgba(0,0,0,.75); color: #fff;
+      padding: 9px 20px; border-radius: 20px; font-size: 14px;
+      z-index: 200; opacity: 0; transition: opacity .3s;
+      pointer-events: none; white-space: nowrap;
     }
     .toast.show { opacity: 1; }
 
     .badge {
-      display: inline-block;
-      background: var(--primary-light);
-      color: var(--primary);
-      border-radius: 6px;
-      padding: 2px 8px;
-      font-size: 12px;
-      font-weight: 600;
+      display: inline-block; background: var(--primary-light); color: var(--primary);
+      border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 600;
     }
   </style>
 </head>
@@ -311,7 +215,7 @@
 <!-- Header -->
 <div class="header">
   <div>
-    <div class="header h1" style="font-size:18px;font-weight:600;">📦 计件记录</div>
+    <div style="font-size:18px;font-weight:600;color:#fff;">📦 计件记录</div>
     <div class="header-date" id="headerDate"></div>
   </div>
   <div id="headerTotal" style="font-size:20px;font-weight:700;color:#FFD54F;"></div>
@@ -320,24 +224,23 @@
 <!-- Main Content -->
 <div class="main-content">
 
-<!-- Page 0: 今日记录 -->
+<!-- Page 0: 每日记录 -->
 <div class="page active" id="page0">
   <div class="summary-bar">
     <div>
-      <div class="label">今日总收入</div>
+      <div class="label">今日总提成</div>
       <div class="amount" id="todayTotal">¥0.00</div>
       <div class="pieces" id="todayPieces">共 0 件</div>
     </div>
     <div style="font-size:36px;">💰</div>
   </div>
-
   <div class="card">
     <div class="card-header">
       <h3>今日工作明细</h3>
       <span class="badge" id="todayDateBadge"></span>
     </div>
     <div id="todayTableWrap">
-      <div class="empty-tip">暂无品类，请先在「品类管理」中添加</div>
+      <div class="empty-tip">暂无产品，请先在「产品库」中添加</div>
     </div>
     <div class="save-row" id="saveRow" style="display:none;">
       <button class="btn btn-primary btn-full" onclick="saveToday()">💾 保存今日记录</button>
@@ -345,15 +248,15 @@
   </div>
 </div>
 
-<!-- Page 1: 品类管理 -->
+<!-- Page 1: 产品库 -->
 <div class="page" id="page1">
   <div class="card">
     <div class="card-header">
       <h3>产品库列表</h3>
-      <span class="badge" id="catCount">0 个</span>
+      <span class="badge" id="prodCount">0 个</span>
     </div>
-    <div id="catList">
-      <div class="empty-tip">还没有品类，点击右下角 + 添加</div>
+    <div id="prodList">
+      <div class="empty-tip">还没有产品，点击右下角 + 添加</div>
     </div>
   </div>
 </div>
@@ -389,25 +292,29 @@
   </button>
 </div>
 
-<!-- Modal: 添加/编辑品类 -->
-<div class="modal-overlay" id="catModal">
+<!-- Modal: 添加/编辑产品 -->
+<div class="modal-overlay" id="prodModal">
   <div class="modal">
-    <h3 id="modalTitle">添加品类</h3>
+    <h3 id="modalTitle">添加产品</h3>
     <div class="form-group">
-      <label>品类名称 *</label>
-      <input type="text" id="inputName" placeholder="例如：衬衫、零件A" />
+      <label>类别 *</label>
+      <input type="text" id="inputCategory" placeholder="例如：上衣、零件、包装" />
+    </div>
+    <div class="form-group">
+      <label>系列（选填）</label>
+      <input type="text" id="inputSeries" placeholder="例如：春夏款、A系列" />
     </div>
     <div class="form-group">
       <label>型号（选填）</label>
-      <input type="text" id="inputModel" placeholder="例如：XL码、M8螺丝" />
+      <input type="text" id="inputModel" placeholder="例如：XL码、M8" />
     </div>
     <div class="form-group">
-      <label>单价（元/件）*</label>
+      <label>提成（元/件）*</label>
       <input type="number" id="inputPrice" placeholder="例如：1.50" step="0.01" min="0" />
     </div>
     <div class="modal-btns">
       <button class="btn btn-ghost" onclick="closeModal()">取消</button>
-      <button class="btn btn-primary" onclick="saveCategory()">保存</button>
+      <button class="btn btn-primary" onclick="saveProduct()">保存</button>
     </div>
   </div>
 </div>
@@ -418,76 +325,68 @@
 <script>
 // ── Data Layer ──────────────────────────────────────────────
 const DB = {
-  get categories() { return JSON.parse(localStorage.getItem('pw_cats') || '[]'); },
-  set categories(v) { localStorage.setItem('pw_cats', JSON.stringify(v)); },
-  get history() { return JSON.parse(localStorage.getItem('pw_history') || '{}'); },
-  set history(v) { localStorage.setItem('pw_history', JSON.stringify(v)); },
-  get draft() { return JSON.parse(localStorage.getItem('pw_draft') || '{}'); },
-  set draft(v) { localStorage.setItem('pw_draft', JSON.stringify(v)); },
+  get products()  { return JSON.parse(localStorage.getItem('pw_prods')   || '[]'); },
+  set products(v) { localStorage.setItem('pw_prods',   JSON.stringify(v)); },
+  get history()   { return JSON.parse(localStorage.getItem('pw_history') || '{}'); },
+  set history(v)  { localStorage.setItem('pw_history', JSON.stringify(v)); },
+  get draft()     { return JSON.parse(localStorage.getItem('pw_draft')   || '{}'); },
+  set draft(v)    { localStorage.setItem('pw_draft',   JSON.stringify(v)); },
 };
 
 function todayKey() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
 function fmtDate(key) {
   const [y,m,d] = key.split('-');
   const days = ['日','一','二','三','四','五','六'];
   const w = new Date(+y,+m-1,+d).getDay();
   return `${y}年${m}月${d}日 周${days[w]}`;
 }
-
-function fmtMoney(n) {
-  return '¥' + Number(n).toFixed(2);
-}
+function fmtMoney(n) { return '¥' + Number(n).toFixed(2); }
 
 // ── Tab ─────────────────────────────────────────────────────
-let currentTab = 0;
 function switchTab(i) {
   document.querySelectorAll('.tab-btn').forEach((b,j) => b.classList.toggle('active', i===j));
-  document.querySelectorAll('.page').forEach((p,j) => p.classList.toggle('active', i===j));
+  document.querySelectorAll('.page').forEach((p,j)   => p.classList.toggle('active', i===j));
   document.getElementById('fab').style.display = i===1 ? 'flex' : 'none';
-  currentTab = i;
   if (i===0) renderToday();
-  if (i===1) renderCategories();
+  if (i===1) renderProducts();
   if (i===2) renderHistory();
 }
 
-// ── Today ────────────────────────────────────────────────────
+// ── 每日记录 ─────────────────────────────────────────────────
 function renderToday() {
-  const cats = DB.categories;
+  const prods = DB.products;
   const draft = DB.draft;
-  const key = todayKey();
-  const wrap = document.getElementById('todayTableWrap');
+  const key   = todayKey();
+  const wrap  = document.getElementById('todayTableWrap');
   const saveRow = document.getElementById('saveRow');
   document.getElementById('todayDateBadge').textContent = fmtDate(key).replace(/\d{4}年/,'');
 
-  if (!cats.length) {
-    wrap.innerHTML = '<div class="empty-tip">暂无品类，请先在「品类管理」中添加</div>';
+  if (!prods.length) {
+    wrap.innerHTML = '<div class="empty-tip">暂无产品，请先在「产品库」中添加</div>';
     saveRow.style.display = 'none';
-    updateTodaySummary(0, 0);
+    updateSummary(0, 0);
     return;
   }
 
-  let html = `<table class="today-table">
-    <thead><tr>
-      <th>品类/型号</th><th>单价</th><th>数量</th><th>小计</th>
-    </tr></thead><tbody>`;
+  let html = `<table class="today-table"><thead><tr>
+    <th>类别</th><th>系列/型号</th><th>提成</th><th>数量</th><th>小计</th>
+  </tr></thead><tbody>`;
 
-  cats.forEach(cat => {
-    const qty = draft[cat.id] !== undefined ? draft[cat.id] : '';
-    const sub = qty !== '' && qty > 0 ? (qty * cat.price).toFixed(2) : '—';
+  prods.forEach(p => {
+    const qty = draft[p.id] !== undefined ? draft[p.id] : '';
+    const sub = qty !== '' && qty > 0 ? fmtMoney(qty * p.price) : '—';
+    const seriesModel = [p.series, p.model].filter(Boolean).join(' / ') || '—';
     html += `<tr>
-      <td style="text-align:left;padding-left:12px;">
-        <div style="font-weight:600;font-size:14px;">${cat.name}</div>
-        ${cat.model ? `<div style="font-size:11px;color:#999;">${cat.model}</div>` : ''}
-      </td>
-      <td style="color:#FF6F00;">¥${Number(cat.price).toFixed(2)}</td>
+      <td style="font-weight:600;">${p.category}</td>
+      <td style="color:#757575;font-size:12px;">${seriesModel}</td>
+      <td style="color:#FF6F00;">¥${Number(p.price).toFixed(2)}</td>
       <td><input class="qty-input" type="number" min="0" value="${qty}"
-        oninput="updateQty('${cat.id}', this.value)"
-        onchange="updateQty('${cat.id}', this.value)" /></td>
-      <td class="subtotal">${sub !== '—' ? '¥'+sub : sub}</td>
+        oninput="updateQty('${p.id}',this.value)"
+        onchange="updateQty('${p.id}',this.value)" /></td>
+      <td class="subtotal">${sub}</td>
     </tr>`;
   });
 
@@ -500,154 +399,143 @@ function renderToday() {
 function updateQty(id, val) {
   const draft = DB.draft;
   const n = parseFloat(val);
-  if (val === '' || isNaN(n) || n < 0) {
-    delete draft[id];
-  } else {
-    draft[id] = n;
-  }
+  if (val === '' || isNaN(n) || n < 0) delete draft[id];
+  else draft[id] = n;
   DB.draft = draft;
   recalcToday();
-  // update subtotal cell inline
-  const cats = DB.categories;
-  const cat = cats.find(c => c.id === id);
-  if (!cat) return;
+  // 更新当行小计
+  const prod = DB.products.find(p => p.id === id);
+  if (!prod) return;
+  const idx = DB.products.findIndex(p => p.id === id);
   const rows = document.querySelectorAll('.today-table tbody tr');
-  cats.forEach((c, i) => {
-    if (c.id === id) {
-      const sub = rows[i].querySelector('.subtotal');
-      const qty = draft[id];
-      sub.textContent = qty > 0 ? '¥'+(qty*c.price).toFixed(2) : '—';
-    }
-  });
+  if (rows[idx]) {
+    const sub = rows[idx].querySelector('.subtotal');
+    const q = draft[id];
+    sub.textContent = q > 0 ? fmtMoney(q * prod.price) : '—';
+  }
 }
 
 function recalcToday() {
-  const cats = DB.categories;
-  const draft = DB.draft;
+  const prods = DB.products, draft = DB.draft;
   let total = 0, pieces = 0;
-  cats.forEach(c => {
-    const q = draft[c.id] || 0;
-    total += q * c.price;
-    pieces += q;
-  });
-  updateTodaySummary(total, pieces);
+  prods.forEach(p => { const q = draft[p.id]||0; total += q*p.price; pieces += q; });
+  updateSummary(total, pieces);
 }
 
-function updateTodaySummary(total, pieces) {
-  document.getElementById('todayTotal').textContent = fmtMoney(total);
+function updateSummary(total, pieces) {
+  document.getElementById('todayTotal').textContent  = fmtMoney(total);
   document.getElementById('todayPieces').textContent = `共 ${pieces} 件`;
   document.getElementById('headerTotal').textContent = total > 0 ? fmtMoney(total) : '';
 }
 
 function saveToday() {
-  const cats = DB.categories;
-  const draft = DB.draft;
-  const key = todayKey();
+  const prods = DB.products, draft = DB.draft, key = todayKey();
   const history = DB.history;
-
-  const items = cats
-    .filter(c => draft[c.id] > 0)
-    .map(c => ({ id: c.id, name: c.name, model: c.model, price: c.price, qty: draft[c.id] }));
-
+  const items = prods.filter(p => draft[p.id] > 0).map(p => ({
+    id: p.id, category: p.category, series: p.series, model: p.model,
+    price: p.price, qty: draft[p.id]
+  }));
   if (!items.length) { showToast('请先填写数量'); return; }
-
-  const total = items.reduce((s, i) => s + i.qty * i.price, 0);
-  const pieces = items.reduce((s, i) => s + i.qty, 0);
-
+  const total  = items.reduce((s,i) => s + i.qty*i.price, 0);
+  const pieces = items.reduce((s,i) => s + i.qty, 0);
   history[key] = { items, total, pieces, savedAt: Date.now() };
   DB.history = history;
-  DB.draft = {};
-
+  DB.draft   = {};
   showToast('✅ 今日记录已保存！');
   renderToday();
 }
 
-// ── Categories ───────────────────────────────────────────────
-function renderCategories() {
-  const cats = DB.categories;
-  const list = document.getElementById('catList');
-  document.getElementById('catCount').textContent = cats.length + ' 个';
+// ── 产品库 ───────────────────────────────────────────────────
+function renderProducts() {
+  const prods = DB.products;
+  const list  = document.getElementById('prodList');
+  document.getElementById('prodCount').textContent = prods.length + ' 个';
 
-  if (!cats.length) {
-    list.innerHTML = '<div class="empty-tip">还没有品类，点击右下角 + 添加</div>';
+  if (!prods.length) {
+    list.innerHTML = '<div class="empty-tip">还没有产品，点击右下角 + 添加</div>';
     return;
   }
 
-  list.innerHTML = cats.map((c, i) => `
-    <div class="cat-item">
-      <div class="cat-info">
-        <div class="cat-name">${c.name}</div>
-        <div class="cat-meta">${c.model ? '型号：' + c.model : '无型号'}</div>
+  list.innerHTML = prods.map((p, i) => {
+    const meta = [p.series && '系列：'+p.series, p.model && '型号：'+p.model].filter(Boolean).join('　');
+    return `<div class="prod-item">
+      <div class="prod-info">
+        <div class="prod-name">${p.category}</div>
+        <div class="prod-meta">${meta || '无系列/型号'}</div>
       </div>
-      <div class="cat-price">¥${Number(c.price).toFixed(2)}<br><span style="font-size:11px;color:#999;font-weight:400;">/件</span></div>
-      <div class="cat-actions">
+      <div class="prod-price">¥${Number(p.price).toFixed(2)}<br>
+        <span style="font-size:11px;color:#999;font-weight:400;">/件</span></div>
+      <div class="prod-actions">
         <button class="btn btn-ghost btn-sm" onclick="openEditModal(${i})">编辑</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteCategory(${i})">删除</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${i})">删除</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 let editIndex = -1;
 function openAddModal() {
   editIndex = -1;
-  document.getElementById('modalTitle').textContent = '添加品类';
-  document.getElementById('inputName').value = '';
-  document.getElementById('inputModel').value = '';
-  document.getElementById('inputPrice').value = '';
-  document.getElementById('catModal').classList.add('open');
-  setTimeout(() => document.getElementById('inputName').focus(), 300);
+  document.getElementById('modalTitle').textContent = '添加产品';
+  document.getElementById('inputCategory').value = '';
+  document.getElementById('inputSeries').value   = '';
+  document.getElementById('inputModel').value    = '';
+  document.getElementById('inputPrice').value    = '';
+  document.getElementById('prodModal').classList.add('open');
+  setTimeout(() => document.getElementById('inputCategory').focus(), 300);
 }
 
 function openEditModal(i) {
-  const cat = DB.categories[i];
+  const p = DB.products[i];
   editIndex = i;
-  document.getElementById('modalTitle').textContent = '编辑品类';
-  document.getElementById('inputName').value = cat.name;
-  document.getElementById('inputModel').value = cat.model || '';
-  document.getElementById('inputPrice').value = cat.price;
-  document.getElementById('catModal').classList.add('open');
+  document.getElementById('modalTitle').textContent = '编辑产品';
+  document.getElementById('inputCategory').value = p.category;
+  document.getElementById('inputSeries').value   = p.series || '';
+  document.getElementById('inputModel').value    = p.model  || '';
+  document.getElementById('inputPrice').value    = p.price;
+  document.getElementById('prodModal').classList.add('open');
 }
 
 function closeModal() {
-  document.getElementById('catModal').classList.remove('open');
+  document.getElementById('prodModal').classList.remove('open');
 }
 
-function saveCategory() {
-  const name = document.getElementById('inputName').value.trim();
-  const model = document.getElementById('inputModel').value.trim();
-  const price = parseFloat(document.getElementById('inputPrice').value);
+function saveProduct() {
+  const category = document.getElementById('inputCategory').value.trim();
+  const series   = document.getElementById('inputSeries').value.trim();
+  const model    = document.getElementById('inputModel').value.trim();
+  const price    = parseFloat(document.getElementById('inputPrice').value);
 
-  if (!name) { showToast('请填写品类名称'); return; }
-  if (isNaN(price) || price <= 0) { showToast('请填写有效单价'); return; }
+  if (!category)          { showToast('请填写类别'); return; }
+  if (isNaN(price)||price<=0) { showToast('请填写有效提成金额'); return; }
 
-  const cats = DB.categories;
+  const prods = DB.products;
   if (editIndex === -1) {
-    cats.push({ id: Date.now().toString(), name, model, price });
-    showToast('✅ 品类已添加');
+    prods.push({ id: Date.now().toString(), category, series, model, price });
+    showToast('✅ 产品已添加');
   } else {
-    cats[editIndex] = { ...cats[editIndex], name, model, price };
-    showToast('✅ 品类已更新');
+    prods[editIndex] = { ...prods[editIndex], category, series, model, price };
+    showToast('✅ 产品已更新');
   }
-  DB.categories = cats;
+  DB.products = prods;
   closeModal();
-  renderCategories();
+  renderProducts();
 }
 
-function deleteCategory(i) {
-  if (!confirm('确定删除这个品类吗？')) return;
-  const cats = DB.categories;
-  cats.splice(i, 1);
-  DB.categories = cats;
+function deleteProduct(i) {
+  if (!confirm('确定删除这个产品吗？')) return;
+  const prods = DB.products;
+  prods.splice(i, 1);
+  DB.products = prods;
   showToast('已删除');
-  renderCategories();
+  renderProducts();
 }
 
-// ── History ──────────────────────────────────────────────────
+// ── 历史汇总 ─────────────────────────────────────────────────
 function renderHistory() {
   const history = DB.history;
   const keys = Object.keys(history).sort((a,b) => b.localeCompare(a));
-  const list = document.getElementById('historyList');
+  const list  = document.getElementById('historyList');
   document.getElementById('historyCount').textContent = keys.length + ' 天';
 
   if (!keys.length) {
@@ -657,15 +545,18 @@ function renderHistory() {
 
   list.innerHTML = keys.map(key => {
     const rec = history[key];
-    const detailRows = rec.items.map(it =>
-      `<tr><td style="text-align:left;">${it.name}${it.model?' ('+it.model+')':''}</td>
-       <td>¥${Number(it.price).toFixed(2)}</td>
-       <td>${it.qty}</td>
-       <td style="color:#FF6F00;">¥${(it.qty*it.price).toFixed(2)}</td></tr>`
-    ).join('');
+    const rows = rec.items.map(it => {
+      const sm = [it.series, it.model].filter(Boolean).join('/') || '—';
+      return `<tr>
+        <td style="text-align:left;">${it.category}</td>
+        <td>${sm}</td>
+        <td>¥${Number(it.price).toFixed(2)}</td>
+        <td>${it.qty}</td>
+        <td style="color:#FF6F00;">¥${(it.qty*it.price).toFixed(2)}</td>
+      </tr>`;
+    }).join('');
 
-    return `
-    <div>
+    return `<div>
       <div class="history-item" onclick="toggleDetail('${key}')">
         <div class="history-row">
           <div>
@@ -677,10 +568,13 @@ function renderHistory() {
       </div>
       <div class="history-detail" id="detail-${key}">
         <table>
-          <thead><tr><th style="text-align:left;">品类</th><th>单价</th><th>数量</th><th>小计</th></tr></thead>
-          <tbody>${detailRows}</tbody>
+          <thead><tr>
+            <th style="text-align:left;">类别</th><th>系列/型号</th>
+            <th>提成</th><th>数量</th><th>小计</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
         </table>
-        <div style="text-align:right;padding:8px 4px 4px;font-size:13px;color:#757575;">
+        <div style="text-align:right;padding:8px 4px 4px;">
           <button class="btn btn-danger btn-sm" onclick="deleteHistory('${key}')">删除此记录</button>
         </div>
       </div>
@@ -689,12 +583,11 @@ function renderHistory() {
 }
 
 function toggleDetail(key) {
-  const el = document.getElementById('detail-' + key);
-  el.classList.toggle('open');
+  document.getElementById('detail-'+key).classList.toggle('open');
 }
 
 function deleteHistory(key) {
-  if (!confirm('确定删除 ' + fmtDate(key) + ' 的记录吗？')) return;
+  if (!confirm('确定删除 '+fmtDate(key)+' 的记录吗？')) return;
   const history = DB.history;
   delete history[key];
   DB.history = history;
@@ -720,7 +613,6 @@ function init() {
     `${d.getMonth()+1}月${d.getDate()}日 周${days[d.getDay()]}`;
   renderToday();
 }
-
 init();
 </script>
 </body>
