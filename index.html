@@ -429,7 +429,7 @@ body {
   </div>
 
   <!-- 售后 -->
-  <div class="page" id="page3">
+  <div class="page" id="page2">
     <div class="summary-bar">
       <div>
         <div class="label">今日售后</div>
@@ -450,7 +450,7 @@ body {
   </div>
 
   <!-- 历史 -->
-  <div class="page" id="page2">
+  <div class="page" id="page3">
     <div class="card">
       <div class="card-header">
         <h3>历史记录</h3>
@@ -474,11 +474,11 @@ body {
     <span class="tab-icon">📦</span>
     <span>产品</span>
   </button>
-  <button class="tab-btn" onclick="switchTab(3)">
+  <button class="tab-btn" onclick="switchTab(2)">
     <span class="tab-icon">🔧</span>
     <span>售后</span>
   </button>
-  <button class="tab-btn" onclick="switchTab(2)">
+  <button class="tab-btn" onclick="switchTab(3)">
     <span class="tab-icon">📅</span>
     <span>历史</span>
   </button>
@@ -645,8 +645,8 @@ function switchTab(i) {
   document.getElementById('fabBtn').style.display = (i === 1) ? 'block' : 'none';
   if (i === 0) renderRecordList();
   if (i === 1) renderProducts();
-  if (i === 2) renderHistory();
-  if (i === 3) renderAfterList();
+  if (i === 2) renderAfterList();
+  if (i === 3) renderHistory();
 }
 
 // ─── 每日记录 ────────────────────────────────────────────
